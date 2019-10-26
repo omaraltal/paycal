@@ -1,0 +1,14 @@
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: $font-family-base;
+}
+
+@each $level in (1 2 3 4 5) {
+  $head: h#{$level};
+  #{$head} {
+    font-size: #{$head}-font-size;
+  }
+}

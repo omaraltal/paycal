@@ -1,0 +1,15 @@
+input {
+  color: #fb3c4c;
+  font-size: 2rem;
+  border: none;
+  padding: 0 0 14px;
+  border-bottom: 2px solid #ddd;
+  background: white;
+  font-weight: bold;
+  transition: 0.2s border-color;
+  &:focus {
+    outline: none;
+    // outline: #3a474e dashed 1px;
+    border-color: #999;
+  }
+}

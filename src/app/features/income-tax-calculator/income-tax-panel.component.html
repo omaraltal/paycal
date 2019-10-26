@@ -1,0 +1,59 @@
+<div class="panel">
+  <h2>{{ title }}</h2>
+  <div class="information">
+    <div class="title">
+      Pay
+    </div>
+    <div class="value">
+      {{ pay }}
+    </div>
+  </div>
+  <div class="information">
+    <div class="title">
+      Taxable Income
+    </div>
+    <div class="value">
+      {{ taxableIncome }}
+    </div>
+  </div>
+  <div class="information">
+    <div class="title">
+      Superannuation
+    </div>
+    <div class="value">
+      {{ superannuation }}
+    </div>
+  </div>
+  <div class="information">
+    <div class="title">
+      Total Taxes
+    </div>
+    <div class="value">
+      {{ totalTaxes }}
+    </div>
+  </div>
+  <div class="information">
+    <div class="title">
+      Income Tax
+    </div>
+    <div class="value">
+      {{ incomeTax }}
+    </div>
+  </div>
+  <div class="information">
+    <div class="title">
+      Medicare Levy
+    </div>
+    <div class="value">
+      {{ medicareLevy }}
+    </div>
+  </div>
+  <div class="information" *ngIf="taxOffset !== undefined">
+    <div class="title">
+      Tax Offsets
+    </div>
+    <div class="value">
+      {{ taxOffset }}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<div role="radiogroup">
+  <span
+    role="radio"
+    *ngFor="let item of data"
+    (click)="check(item)"
+    [attr.aria-checked]="checkedItem === item"
+    (keydown)="onKeydown(item, $event)"
+    [tabindex]="focusableItem === item ? 0 : -1"
+    #radio
+    >{{ item }}</span
+  >
+</div>

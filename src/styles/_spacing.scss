@@ -1,0 +1,45 @@
+$spacing-directions: (
+  'l': left,
+  't': top,
+  'r': right,
+  'b': bottom,
+);
+
+$spacing-types: (
+  'p': padding,
+  'm': margin,
+);
+
+@mixin responsiveSpacing($types, $directions, $values, $breakpoints) {
+  @each $t in $types {
+    @each $d in $directions {
+      @each $v in $values {
+        @each $b in $breakpoints {
+          @include media-breakpoint-up($b) {
+            @if $d == x {
+              .#{$t}#{d}-#{b}-#{v} {
+                #{map-get($spacing-types, $t)}: 0
+                  map-get($spacers, $v) !important;
+              }
+            } @else if $d == y {
+              .#{$t}#{d}-#{b}-#{v} {
+                #{map-get($spacing-types, $t)}: map-get($spacers, $v)
+                  0 !important;
+              }
+            } @else if $d {
+              .#{$t}#{$d}-#{$b}-#{$v} {
+                #{map-get($spacing-types, $t)}-#{map-get($spacing-directions, $d)}: $v !important;
+              }
+            } @else {
+              .#{$t}-#{$b}-#{$v} {
+                #{map-get($spacing-types, $t)}: $v !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@include responsiveSpacing(m p, null x y t r l b, 0 1 2 3 4 5, sm md lg xl);

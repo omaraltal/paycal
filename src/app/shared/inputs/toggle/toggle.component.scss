@@ -1,0 +1,53 @@
+@import 'src/styles/variables';
+
+$toggle-width: 2.1875rem !default;
+$toggle-padding: 0.1875rem !default;
+$toggle-checked-background: $cyan !default;
+$toggle-font-family: $font-family-lato;
+$toggle-transition-duration: 0.2s !default;
+$toggle-button-size: ($toggle-width - (2 * $toggle-padding))/2;
+
+$enable-toggle-rounded: true !default;
+$enable-toggle-transition: true !default;
+
+.toggle-wrapper {
+  display: inline-block;
+  padding: $toggle-padding;
+  width: $toggle-width;
+  background: $gray-400;
+  @if $enable-toggle-rounded {
+    border-radius: $toggle-width/2;
+  }
+  @if $enable-toggle-transition {
+    transition: $toggle-transition-duration background;
+  }
+  font-size: 0;
+  .toggle-btn {
+    position: relative;
+    display: inline-block;
+    width: $toggle-button-size;
+    height: $toggle-button-size;
+    background: $white;
+    @if $enable-toggle-rounded {
+      border-radius: $toggle-button-size / 2;
+    }
+    @if $enable-toggle-transition {
+      transition: $toggle-transition-duration left;
+    }
+    left: 0;
+  }
+  &:focus {
+    background: $gray-300;
+  }
+  &.checked {
+    background: $toggle-checked-background;
+    .toggle-btn {
+      left: $toggle-button-size;
+    }
+  }
+}
+label {
+  margin-left: 10px;
+  font-family: $toggle-font-family;
+  color: $gray-900;
+}

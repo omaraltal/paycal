@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="col-12 col-md-6">
+    <h2><span>Calculate my</span> <br />income tax <br /></h2>
+    <shared-currency [(value)]="income"></shared-currency>
+    <div class="mt-1">
+      <shared-toggle
+        [checked]="false"
+        data-label="Includes Superannuation"
+        (changetoggleState)="updateIncludeSuperannuation($event)"
+      ></shared-toggle>
+    </div>
+    <div>
+      <shared-radio></shared-radio>
+    </div>
+  </div>
+</div>
+<div class="col-12 col-md-6"></div>

@@ -1,0 +1,13 @@
+<span
+  role="checkbox"
+  attr.aria-checked="{{ checked }}"
+  class="toggle-wrapper"
+  [ngClass]="{ checked: checked }"
+  (click)="toggle()"
+  tabindex="0"
+  (keydown)="onKeydown($event)"
+  attr.aria-labelledby="{{ id }}"
+>
+  <span class="toggle-btn"></span>
+</span>
+<label [id]="id"> {{ label }}</label>

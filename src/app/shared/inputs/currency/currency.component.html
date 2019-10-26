@@ -1,0 +1,6 @@
+<input
+  type="text"
+  [ngModel]="value | currency"
+  (ngModelChange)="setValue($event)"
+  #input
+/>
