@@ -45,8 +45,9 @@ export class RadioComponent {
     (this.radios as any)._results[idx].nativeElement.focus();
   }
 
-  onKeydown(item: string, { key }: any): void {
+  onKeydown(item: string, event: any): void {
     let idx;
+    const { key } = event;
     if (key === keys.SPACE) {
       idx = this.data.indexOf(item);
       this.check(item);

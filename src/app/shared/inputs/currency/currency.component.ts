@@ -32,7 +32,7 @@ export class CurrencyComponent {
     if (el.value.indexOf('.') < selectionStart) {
       reversedSelectionStart = reversedSelectionStart - 1;
     }
-    if (parsed != 0) {
+    if (parsed !== 0) {
       this.valueChange.emit(parsed);
     }
     setTimeout(() => {

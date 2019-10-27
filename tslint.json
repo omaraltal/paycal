@@ -9,8 +9,18 @@
     "component-class-suffix": true,
     "contextual-lifecycle": true,
     "directive-class-suffix": true,
-    "directive-selector": [true, "attribute", ["shared", "app"], "camelCase"],
-    "component-selector": [true, "element", ["shared", "app"], "kebab-case"],
+    "directive-selector": [
+      true,
+      "attribute",
+      ["shared", "pc", "app"],
+      "camelCase"
+    ],
+    "component-selector": [
+      true,
+      "element",
+      ["shared", "pc", "app"],
+      "kebab-case"
+    ],
     "import-blacklist": [true, "rxjs/Rx"],
     "interface-name": false,
     "max-classes-per-file": false,

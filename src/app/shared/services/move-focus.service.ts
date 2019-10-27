@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class MoveFocusService {
   byQuerySelector(querySelector: string) {
-    const element = <HTMLElement>document.querySelector(querySelector);
+    const element: HTMLElement = document.querySelector(querySelector);
     if (!element) {
       return;
     }

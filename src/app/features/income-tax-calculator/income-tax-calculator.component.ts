@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -18,7 +18,7 @@ import { TaxRates } from '@pc/models/tax-rates';
   templateUrl: './income-tax-calculator.component.html',
   styleUrls: ['./income-tax-calculator.component.scss'],
 })
-export class IncomeTaxCalculatorComponent {
+export class IncomeTaxCalculatorComponent implements OnInit {
   residencyStatus$ = new BehaviorSubject<ResidencyStatus>(
     ResidencyStatus.RESIDENT
   );

@@ -11,7 +11,7 @@ export class CustomCurrencyPipe implements PipeTransform {
   }
   transform(value) {
     const v = value.toString().replace(/[^0-9\.]/g, '');
-    const transformed = this.currencyPipe.transform(parseInt(v));
+    const transformed = this.currencyPipe.transform(parseInt(v, 10));
 
     return transformed;
   }

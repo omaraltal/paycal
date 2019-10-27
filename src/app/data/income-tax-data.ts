@@ -2,7 +2,7 @@ import { ResidencyStatus } from '@pc/models/residency-status';
 import { IncomeTaxData } from '@pc/models/income-tax-data';
 
 export const INCOME_TAX_DATA: IncomeTaxData = {
-  '2019': {
+  2019: {
     [ResidencyStatus.RESIDENT]: {
       taxRates: [
         {

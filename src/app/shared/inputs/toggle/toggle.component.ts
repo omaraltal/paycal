@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-let id: number = 0;
+let id = 0;
 
 @Component({
   selector: 'shared-toggle',
