@@ -40,6 +40,7 @@ export class RadioComponent {
 
   onKeydown(item: string, event: any): void {
     let idx;
+    const { key } = event;
     if (key === Keys.SPACE) {
       idx = this.data.indexOf(item);
       this.check(item);
