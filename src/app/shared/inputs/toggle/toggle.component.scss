@@ -2,7 +2,13 @@
 
 $toggle-width: 2.1875rem !default;
 $toggle-padding: 0.1875rem !default;
-$toggle-checked-background: $cyan !default;
+$toggle-background: $gray-500 !default;
+$toggle-focus-background: lighten($toggle-background, 5%) !default;
+$toggle-checked-background: $teal !default;
+$toggle-checked-focus-background: lighten(
+  $toggle-checked-background,
+  5%
+) !default;
 $toggle-font-family: $font-family-lato;
 $toggle-transition-duration: 0.2s !default;
 $toggle-button-size: ($toggle-width - (2 * $toggle-padding))/2;
@@ -10,11 +16,15 @@ $toggle-button-size: ($toggle-width - (2 * $toggle-padding))/2;
 $enable-toggle-rounded: true !default;
 $enable-toggle-transition: true !default;
 
+.toggle {
+  display: flex;
+  flex-direction: column;
+}
 .toggle-wrapper {
   display: inline-block;
   padding: $toggle-padding;
   width: $toggle-width;
-  background: $gray-400;
+  background: $toggle-background;
   @if $enable-toggle-rounded {
     border-radius: $toggle-width/2;
   }
@@ -37,12 +47,15 @@ $enable-toggle-transition: true !default;
     left: 0;
   }
   &:focus {
-    background: $gray-300;
+    background: $toggle-focus-background;
   }
   &.checked {
     background: $toggle-checked-background;
     .toggle-btn {
       left: $toggle-button-size;
+    }
+    &:focus {
+      background: $toggle-checked-focus-background;
     }
   }
 }

@@ -1,13 +1,15 @@
-<span
-  role="checkbox"
-  attr.aria-checked="{{ checked }}"
-  class="toggle-wrapper"
-  [ngClass]="{ checked: checked }"
-  (click)="toggle()"
-  tabindex="0"
-  (keydown)="onKeydown($event)"
-  attr.aria-labelledby="{{ id }}"
->
-  <span class="toggle-btn"></span>
-</span>
-<label [id]="id"> {{ label }}</label>
+<div class="toggle">
+  <shared-label [label]="label" [id]="id" class="pb-1"></shared-label>
+  <span
+    role="checkbox"
+    attr.aria-checked="{{ checked }}"
+    class="toggle-wrapper"
+    [ngClass]="{ checked: checked }"
+    (click)="toggle()"
+    tabindex="0"
+    (keydown)="onKeydown($event)"
+    attr.aria-labelledby="{{ id }}"
+  >
+    <span class="toggle-btn"></span>
+  </span>
+</div>

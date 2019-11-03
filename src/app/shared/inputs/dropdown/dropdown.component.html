@@ -1,0 +1,38 @@
+<ul
+  class="dropdown"
+  [ngClass]="{ expanded: expanded, selected: selected }"
+  (click)="$event.stopPropagation()"
+>
+  <li
+    role="button"
+    attr.aria-labelledby="dropdown-label-{{ id }}"
+    id="dropdown-selected-{{ id }}"
+    tabindex="0"
+    (click)="toggleList()"
+    (keydown)="onLabelKeydown($event)"
+  >
+    <span>
+      <span>
+        <span id="dropdown-label-{{ id }}" class="label">{{ label }}</span>
+        <br />
+        <span *ngIf="selected">{{ selected }}</span>
+      </span>
+      <i class="caret" [ngClass]="{ up: expanded, down: !expanded }"></i>
+    </span>
+  </li>
+
+  <li attr.aria-expanded="{{ expanded }}" role="list">
+    <ul class="list">
+      <li
+        tabindex=""
+        class="list-item"
+        *ngFor="let item of data"
+        id="{{ item }}-{{ id }}"
+        (click)="setectItem(item)"
+        [ngClass]="{ selected: selected === item }"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </li>
+</ul>

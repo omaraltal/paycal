@@ -9,6 +9,12 @@
         (changetoggleState)="updateIncludeSuperannuation($event)"
       ></shared-toggle>
     </div>
+    <div class="mt-1">
+      <shared-dropdown
+        (selectionChange)="onIncomeYearSelectionChange($event)"
+        [data]="incomeYears"
+      ></shared-dropdown>
+    </div>
     <div>
       <shared-radio></shared-radio>
     </div>

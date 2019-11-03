@@ -16,6 +16,8 @@ import { CheckboxComponent } from './inputs/checkbox/checkbox.component';
 import { ToggleComponent } from './inputs/toggle/toggle.component';
 import { RadioComponent } from './inputs/radio/radio.component';
 import { MoveFocusService } from './services/move-focus.service';
+import { DropdownComponent } from './inputs/dropdown/dropdown.component';
+import { LabelComponent } from './inputs/label/label.component';
 
 @NgModule({
   imports: [FormsModule, CommonModule],
@@ -25,6 +27,8 @@ import { MoveFocusService } from './services/move-focus.service';
     CheckboxComponent,
     ToggleComponent,
     RadioComponent,
+    DropdownComponent,
+    LabelComponent,
   ],
   exports: [
     CurrencyComponent,
@@ -32,6 +36,8 @@ import { MoveFocusService } from './services/move-focus.service';
     CheckboxComponent,
     ToggleComponent,
     RadioComponent,
+    DropdownComponent,
+    LabelComponent,
   ],
   providers: [
     IncomeTaxService,

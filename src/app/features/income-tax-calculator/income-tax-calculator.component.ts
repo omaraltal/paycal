@@ -53,6 +53,7 @@ export class IncomeTaxCalculatorComponent implements OnInit {
   medicareLevyData$: Observable<FormulaBasedTier[]>;
   lowIncomeTaxOffsetData$: Observable<FormulaBasedTier[]>;
   lowAndMiddleIncomeTaxOffsetData$: Observable<FormulaBasedTier[]>;
+  incomeYears: number[];
 
   // pay
   annuallyPay$: Observable<number>;
@@ -137,6 +138,7 @@ export class IncomeTaxCalculatorComponent implements OnInit {
     this.lowAndMiddleIncomeTaxOffsetData$ = this.td.getLowAndMiddleIncomeTaxOffsetData(
       this.applicableTaxData$
     );
+    this.incomeYears = this.td.getTaxYearsData();
 
     // taxable income
     this.annuallyTaxableIncome$ = this.tic.calculateAnnuallyTaxableIncome(
@@ -270,5 +272,9 @@ export class IncomeTaxCalculatorComponent implements OnInit {
 
   updateIncludeSuperannuation(isIncluded: boolean) {
     this.superannuationIncluded = isIncluded;
+  }
+
+  onIncomeYearSelectionChange(year) {
+    this.incomeYear$.next(year);
   }
 }

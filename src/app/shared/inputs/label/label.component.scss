@@ -1,0 +1,10 @@
+@import 'variables';
+
+$input-label-font-size: 0.9rem;
+$toggle-font-family: $font-family-lato;
+
+label {
+  font-family: $toggle-font-family;
+  font-size: $input-label-font-size;
+  color: $gray-600;
+}

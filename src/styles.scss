@@ -2,3 +2,7 @@
 
 @import 'spacing';
 @import 'heading';
+
+:focus {
+  outline: none;
+}

@@ -8,14 +8,7 @@ import {
   QueryList,
 } from '@angular/core';
 import { ResidencyStatus } from '@pc/models/residency-status';
-
-enum keys {
-  SPACE = ' ',
-  ARROW_DOWN = 'ArrowDown',
-  ARROW_UP = 'ArrowUp',
-  ARROW_LEFT = 'ArrowLeft',
-  ARROW_RIGHT = 'ArrowRight',
-}
+import { Keys } from '@pc/models/keys';
 
 @Component({
   selector: 'shared-radio',
@@ -47,21 +40,20 @@ export class RadioComponent {
 
   onKeydown(item: string, event: any): void {
     let idx;
-    const { key } = event;
-    if (key === keys.SPACE) {
+    if (key === Keys.SPACE) {
       idx = this.data.indexOf(item);
       this.check(item);
       event.preventDefault();
       return;
     }
-    if ([keys.ARROW_DOWN, keys.ARROW_RIGHT].includes(key)) {
+    if ([Keys.ARROW_DOWN, Keys.ARROW_RIGHT].includes(key)) {
       idx = (this.data.indexOf(item) + 1) % this.data.length;
       this.check(this.data[idx]);
       this.focus(idx);
       event.preventDefault();
       return;
     }
-    if ([keys.ARROW_UP, keys.ARROW_LEFT].includes(key)) {
+    if ([Keys.ARROW_UP, Keys.ARROW_LEFT].includes(key)) {
       idx =
         this.data.indexOf(item) === 0
           ? this.data.length - 1

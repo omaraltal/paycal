@@ -67,4 +67,10 @@ export class TaxDataService {
       shareReplay(1)
     );
   }
+
+  getTaxYearsData(): number[] {
+    return Object.keys(INCOME_TAX_DATA)
+      .map(i => Number(i))
+      .sort((a, b) => b - a);
+  }
 }
