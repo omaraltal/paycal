@@ -1,23 +1,88 @@
 <div class="row">
   <div class="col-12 col-md-6">
     <h2><span>Calculate my</span> <br />income tax <br /></h2>
-    <shared-currency [(value)]="income"></shared-currency>
-    <div class="mt-1">
-      <shared-toggle
-        [checked]="false"
-        data-label="Includes Superannuation"
-        (changetoggleState)="updateIncludeSuperannuation($event)"
-      ></shared-toggle>
-    </div>
-    <div class="mt-1">
-      <shared-dropdown
-        (selectionChange)="onIncomeYearSelectionChange($event)"
-        [data]="incomeYears"
-      ></shared-dropdown>
+    <div>
+      <shared-currency [(value)]="income"></shared-currency>
     </div>
     <div>
-      <shared-radio></shared-radio>
+      <shared-toggle></shared-toggle>
+    </div>
+    <!-- <mat-form-field> -->
+    <!-- <mat-label>Frequency</mat-label> -->
+    <!-- <mat-select [(ngModel)]="payFrequency">
+        <mat-option
+          *ngFor="let frequency of payFrequencyData | keyvalue"
+          [value]="frequency.value"
+          >{{ frequency.value }}</mat-option
+        >
+      </mat-select> -->
+    <!-- </mat-form-field> -->
+    <div class="mt-1">
+      <mat-slide-toggle [(ngModel)]="superannuationIncluded">
+        Includes Superannuation
+      </mat-slide-toggle>
+    </div>
+    <mat-form-field>
+      <mat-label>Income year</mat-label>
+      <mat-select [(ngModel)]="incomeYear">
+        <mat-option *ngFor="let year of incomeYears" [value]="year">{{
+          year
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div>
+      <mat-label>Residency status</mat-label>
+      <mat-radio-group
+        aria-label="Select an option"
+        class="radios-container"
+        [(ngModel)]="residencyStatus"
+      >
+        <mat-radio-button
+          *ngFor="let status of residencyStatusData | keyvalue"
+          [value]="status.value"
+        >
+          {{ status.value }}
+        </mat-radio-button>
+      </mat-radio-group>
     </div>
   </div>
 </div>
-<div class="col-12 col-md-6"></div>
+<div class="result">
+  <pc-income-tax-panel
+    title="Yearly"
+    [pay]="annuallyPayIncludingTaxOffsets$ | async"
+    [taxableIncome]="annuallyTaxableIncome$ | async"
+    [superannuation]="annuallySuperannuation$ | async"
+    [totalTaxes]="annuallyIncomeTaxExcludingOffsets$ | async"
+    [medicareLevy]="annuallyMedicareLevy$ | async"
+    [incomeTax]="annuallyIncomeTax$ | async"
+    [taxOffset]="annuallyTaxOffset$ | async"
+  ></pc-income-tax-panel>
+  <pc-income-tax-panel
+    title="Monthly"
+    [pay]="monthlyPay$ | async"
+    [taxableIncome]="monthlyTaxableIncome$ | async"
+    [superannuation]="monthlySuperannuation$ | async"
+    [totalTaxes]="monthlyTotalPaygTaxes$ | async"
+    [medicareLevy]="monthlyMedicareLevy$ | async"
+    [incomeTax]="monthlyIncomePaygTax$ | async"
+  ></pc-income-tax-panel>
+  <pc-income-tax-panel
+    title="Fortnightly"
+    [pay]="fortnightlyPay$ | async"
+    [taxableIncome]="fortnightlyTaxableIncome$ | async"
+    [superannuation]="fortnightlySuperannuation$ | async"
+    [totalTaxes]="fortnightlyTotalPaygTaxes$ | async"
+    [medicareLevy]="fortnightlyMedicareLevy$ | async"
+    [incomeTax]="fortnightlyIncomePaygTax$ | async"
+  ></pc-income-tax-panel>
+  <pc-income-tax-panel
+    title="Weekly"
+    [pay]="weeklyPay$ | async"
+    [taxableIncome]="weeklyTaxableIncome$ | async"
+    [superannuation]="weeklySuperannuation$ | async"
+    [totalTaxes]="weeklyTotalPaygTaxes$ | async"
+    [medicareLevy]="weeklyMedicareLevy$ | async"
+    [incomeTax]="weeklyIncomePaygTax$ | async"
+  ></pc-income-tax-panel>
+</div>

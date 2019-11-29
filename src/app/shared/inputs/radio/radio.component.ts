@@ -1,14 +1,15 @@
 import {
   Component,
-  Output,
+  ElementRef,
   EventEmitter,
   Input,
-  ViewChildren,
-  ElementRef,
+  Output,
   QueryList,
+  ViewChildren,
 } from '@angular/core';
-import { ResidencyStatus } from '@pc/models/residency-status';
+
 import { Keys } from '@pc/models/keys';
+import { ResidencyStatus } from '@pc/models/residency-status';
 
 @Component({
   selector: 'shared-radio',
@@ -21,7 +22,7 @@ export class RadioComponent {
   @Output() changeSelection = new EventEmitter<string>();
   data: Array<string> = [
     ResidencyStatus.RESIDENT,
-    ResidencyStatus.NON_RESIDENT,
+    ResidencyStatus.FOREIGN_RESIDENT,
     ResidencyStatus.WORKING_HOLIDAY,
   ];
 

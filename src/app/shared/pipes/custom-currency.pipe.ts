@@ -1,5 +1,5 @@
-import { Pipe, PipeTransform, LOCALE_ID, Inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
+import { Inject, LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'pcCurrency',

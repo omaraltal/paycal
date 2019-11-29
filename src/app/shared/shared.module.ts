@@ -1,23 +1,23 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 
-import { CurrencyComponent } from './inputs/currency/currency.component';
-import { CustomCurrencyPipe } from './pipes/custom-currency.pipe';
-import { IncomeTaxService } from './services/income-tax-calculator.service';
-import { TaxOffsetService } from './services/tax-offset.service';
-import { SuperannuationService } from './services/superannuation.service';
-import { ResolutionService } from './services/resolution.service';
-import { TaxableIncomeService } from './services/taxable-income.service';
-import { MedicareLevyService } from './services/medicare-levy.service';
-import { PayService } from './services/pay.service';
-import { TaxDataService } from './services/tax-data.service';
 import { CheckboxComponent } from './inputs/checkbox/checkbox.component';
-import { ToggleComponent } from './inputs/toggle/toggle.component';
-import { RadioComponent } from './inputs/radio/radio.component';
-import { MoveFocusService } from './services/move-focus.service';
+import { CurrencyComponent } from './inputs/currency/currency.component';
 import { DropdownComponent } from './inputs/dropdown/dropdown.component';
 import { LabelComponent } from './inputs/label/label.component';
+import { RadioComponent } from './inputs/radio/radio.component';
+import { ToggleComponent } from './inputs/toggle/toggle.component';
+import { CustomCurrencyPipe } from './pipes/custom-currency.pipe';
+import { IncomeTaxService } from './services/income-tax-calculator.service';
+import { MedicareLevyService } from './services/medicare-levy.service';
+import { MoveFocusService } from './services/move-focus.service';
+import { PayService } from './services/pay.service';
+import { ResolutionService } from './services/resolution.service';
+import { SuperannuationService } from './services/superannuation.service';
+import { TaxDataService } from './services/tax-data.service';
+import { TaxOffsetService } from './services/tax-offset.service';
+import { TaxableIncomeService } from './services/taxable-income.service';
 
 @NgModule({
   imports: [FormsModule, CommonModule],

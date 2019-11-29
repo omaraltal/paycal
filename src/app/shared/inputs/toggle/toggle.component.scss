@@ -1,6 +1,6 @@
 @import 'variables';
 
-$toggle-width: 2.1875rem !default;
+$toggle-width: 3rem !default;
 $toggle-padding: 0.1875rem !default;
 $toggle-background: $gray-500 !default;
 $toggle-focus-background: lighten($toggle-background, 5%) !default;
@@ -11,7 +11,7 @@ $toggle-checked-focus-background: lighten(
 ) !default;
 $toggle-font-family: $font-family-lato;
 $toggle-transition-duration: 0.2s !default;
-$toggle-button-size: ($toggle-width - (2 * $toggle-padding))/2;
+$toggle-button-size: 1rem;
 
 $enable-toggle-rounded: true !default;
 $enable-toggle-transition: true !default;
@@ -25,6 +25,7 @@ $enable-toggle-transition: true !default;
   padding: $toggle-padding;
   width: $toggle-width;
   background: $toggle-background;
+  border: 2px solid black;
   @if $enable-toggle-rounded {
     border-radius: $toggle-width/2;
   }
@@ -38,6 +39,7 @@ $enable-toggle-transition: true !default;
     width: $toggle-button-size;
     height: $toggle-button-size;
     background: $white;
+    border: 2px solid black;
     @if $enable-toggle-rounded {
       border-radius: $toggle-button-size / 2;
     }

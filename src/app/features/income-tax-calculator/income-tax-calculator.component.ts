@@ -2,16 +2,19 @@ import { Component, OnInit } from '@angular/core';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
+import { ApplicableIndividualTaxData } from '@pc/models/applicable-individual-tax-data';
+import { FormulaBasedTier } from '@pc/models/formula-based-tier';
+import { PayAsYouGo } from '@pc/models/pay-as-you-go';
+import { PayFrequency } from '@pc/models/pay-frequency';
 import { ResidencyStatus } from '@pc/models/residency-status';
+import { Superannuation } from '@pc/models/superannuation';
 import { IncomeTaxService } from '@pc/shared/services/income-tax-calculator.service';
-import { TaxOffsetService } from '@pc/shared/services/tax-offset.service';
-import { SuperannuationService } from '@pc/shared/services/superannuation.service';
-import { TaxableIncomeService } from '@pc/shared/services/taxable-income.service';
 import { MedicareLevyService } from '@pc/shared/services/medicare-levy.service';
 import { PayService } from '@pc/shared/services/pay.service';
+import { SuperannuationService } from '@pc/shared/services/superannuation.service';
 import { TaxDataService } from '@pc/shared/services/tax-data.service';
-import { FormulaBasedTier } from '@pc/models/formula-based-tier';
-import { TaxRates } from '@pc/models/tax-rates';
+import { TaxOffsetService } from '@pc/shared/services/tax-offset.service';
+import { TaxableIncomeService } from '@pc/shared/services/taxable-income.service';
 
 @Component({
   selector: 'app-income-tax-calculator',
@@ -19,9 +22,44 @@ import { TaxRates } from '@pc/models/tax-rates';
   styleUrls: ['./income-tax-calculator.component.scss'],
 })
 export class IncomeTaxCalculatorComponent implements OnInit {
+  residencyStatusData = ResidencyStatus;
+  payFrequencyData = PayFrequency;
+
+  // residency status
   residencyStatus$ = new BehaviorSubject<ResidencyStatus>(
     ResidencyStatus.RESIDENT
   );
+
+  innerResidencyStatus: ResidencyStatus = ResidencyStatus.RESIDENT;
+  set residencyStatus(value: ResidencyStatus) {
+    this.innerResidencyStatus = value;
+    this.residencyStatus$.next(value);
+  }
+  get residencyStatus(): ResidencyStatus {
+    return this.innerResidencyStatus;
+  }
+
+  // pay frequency
+  payFrequency$ = new BehaviorSubject<PayFrequency>(PayFrequency.ANNUALLY);
+
+  innerPayFrequency: PayFrequency = PayFrequency.ANNUALLY;
+  set payFrequency(value: PayFrequency) {
+    this.innerPayFrequency = value;
+    this.payFrequency$.next(value);
+  }
+  get payFrequency(): PayFrequency {
+    return this.innerPayFrequency;
+  }
+
+  // income year
+  innerIncomeYear = 2019;
+  set incomeYear(value: number) {
+    this.innerIncomeYear = value;
+    this.incomeYear$.next(value);
+  }
+  get incomeYear(): number {
+    return this.innerIncomeYear;
+  }
 
   // superannuation
   innerSuperannuationIncluded = false;
@@ -47,9 +85,10 @@ export class IncomeTaxCalculatorComponent implements OnInit {
   result$: Observable<number>;
 
   // tax data
-  applicableTaxData$: Observable<TaxRates>;
-  taxRatesData$: Observable<{ range: number[]; rate: number }[]>;
-  superannuationData$: Observable<number>;
+  applicableTaxData$: Observable<ApplicableIndividualTaxData>;
+  taxBracketData$: Observable<{ range: number[]; rate: number }[]>;
+  payAsYouGoData$: Observable<PayAsYouGo[]>;
+  superannuationData$: Observable<Superannuation>;
   medicareLevyData$: Observable<FormulaBasedTier[]>;
   lowIncomeTaxOffsetData$: Observable<FormulaBasedTier[]>;
   lowAndMiddleIncomeTaxOffsetData$: Observable<FormulaBasedTier[]>;
@@ -73,26 +112,30 @@ export class IncomeTaxCalculatorComponent implements OnInit {
   fortnightlySuperannuation$: Observable<number>;
   weeklySuperannuation$: Observable<number>;
 
-  // income
-  annuallyIncomeTax$: Observable<number>;
-  monthlyIncomeTax$: Observable<number>;
-  fortnightlyIncomeTax$: Observable<number>;
-  weeklyIncomeTax$: Observable<number>;
-
-  // income tax excluding offsets
-  annuallyIncomeTaxExcludingOffsets$: Observable<number>;
-
   // medical levy
   annuallyMedicareLevy$: Observable<number>;
   monthlyMedicareLevy$: Observable<number>;
   fortnightlyMedicareLevy$: Observable<number>;
   weeklyMedicareLevy$: Observable<number>;
 
+  // income tax
+  annuallyIncomeTax$: Observable<number>;
+
   // total taxes
   annuallyTotalTaxes$: Observable<number>;
-  monthlyTotalTaxes$: Observable<number>;
-  fortnightlyTotalTaxes$: Observable<number>;
-  weeklyTotalTaxes$: Observable<number>;
+
+  // total payg taxes
+  monthlyTotalPaygTaxes$: Observable<number>;
+  fortnightlyTotalPaygTaxes$: Observable<number>;
+  weeklyTotalPaygTaxes$: Observable<number>;
+
+  // income payg tax
+  monthlyIncomePaygTax$: Observable<number>;
+  fortnightlyIncomePaygTax$: Observable<number>;
+  weeklyIncomePaygTax$: Observable<number>;
+
+  // income tax excluding offsets
+  annuallyIncomeTaxExcludingOffsets$: Observable<number>;
 
   // total taxes excluding offsets
   annuallyTotalTaxesExcludingOffsets$: Observable<number>;
@@ -123,9 +166,11 @@ export class IncomeTaxCalculatorComponent implements OnInit {
     // tax data
     this.applicableTaxData$ = this.td.getApplicableTaxData(
       this.incomeYear$,
-      this.residencyStatus$
+      this.residencyStatus$,
+      this.payFrequency$
     );
-    this.taxRatesData$ = this.td.getTaxRatesData(this.applicableTaxData$);
+    this.taxBracketData$ = this.td.getTaxBracketsData(this.applicableTaxData$);
+    this.payAsYouGoData$ = this.td.getPayAsYouGoData(this.applicableTaxData$);
     this.superannuationData$ = this.td.getSuperannuationData(
       this.applicableTaxData$
     );
@@ -144,7 +189,8 @@ export class IncomeTaxCalculatorComponent implements OnInit {
     this.annuallyTaxableIncome$ = this.tic.calculateAnnuallyTaxableIncome(
       this.superannuationData$,
       this.income$,
-      this.superannuationIncluded$
+      this.superannuationIncluded$,
+      this.payFrequency$
     );
     this.monthlyTaxableIncome$ = this.tic.calculateMonthlyTaxableIncome(
       this.annuallyTaxableIncome$
@@ -160,7 +206,8 @@ export class IncomeTaxCalculatorComponent implements OnInit {
     this.annuallySuperannuation$ = this.sc.calculateAnnuallySuperannuation(
       this.superannuationData$,
       this.income$,
-      this.superannuationIncluded$
+      this.superannuationIncluded$,
+      this.payFrequency$
     );
     this.monthlySuperannuation$ = this.sc.calculateMonthlySuperannuation(
       this.annuallySuperannuation$
@@ -170,21 +217,6 @@ export class IncomeTaxCalculatorComponent implements OnInit {
     );
     this.weeklySuperannuation$ = this.sc.calculateWeeklySuperannuation(
       this.annuallySuperannuation$
-    );
-
-    // income tax
-    this.annuallyIncomeTax$ = this.itc.calculateAnnuallyIncomeTax(
-      this.taxRatesData$,
-      this.annuallyTaxableIncome$
-    );
-    this.monthlyIncomeTax$ = this.itc.calculateMonthlyIncomeTax(
-      this.annuallyIncomeTax$
-    );
-    this.fortnightlyIncomeTax$ = this.itc.calculateFortnightlyIncomeTax(
-      this.annuallyIncomeTax$
-    );
-    this.weeklyIncomeTax$ = this.itc.calculateWeeklyIncomeTax(
-      this.annuallyIncomeTax$
     );
 
     // medical levy
@@ -202,22 +234,44 @@ export class IncomeTaxCalculatorComponent implements OnInit {
       this.annuallyMedicareLevy$
     );
 
+    // income tax
+    this.annuallyIncomeTax$ = this.itc.calculateAnnuallyIncomeTax(
+      this.taxBracketData$,
+      this.annuallyTaxableIncome$
+    );
+
     // total taxes
     this.annuallyTotalTaxes$ = this.itc.calculateAnnuallyTotalTaxes(
       this.annuallyIncomeTax$,
       this.annuallyMedicareLevy$
     );
-    this.monthlyTotalTaxes$ = this.itc.calculateMonthlyTotalTaxes(
-      this.monthlyIncomeTax$,
+
+    // total payg tax
+    this.monthlyTotalPaygTaxes$ = this.itc.calculateMonthlyTotalPaygTaxes(
+      this.monthlyTaxableIncome$,
+      this.payAsYouGoData$
+    );
+    this.fortnightlyTotalPaygTaxes$ = this.itc.calculateFortnightlyTotalPaygTaxes(
+      this.fortnightlyTaxableIncome$,
+      this.payAsYouGoData$
+    );
+    this.weeklyTotalPaygTaxes$ = this.itc.calculateWeeklyTotalPaygTaxes(
+      this.weeklyTaxableIncome$,
+      this.payAsYouGoData$
+    );
+
+    // payg tax
+    this.weeklyIncomePaygTax$ = this.itc.calculateWeeklyIncomePaygTax(
+      this.weeklyTaxableIncome$,
+      this.weeklyMedicareLevy$
+    );
+    this.monthlyIncomePaygTax$ = this.itc.calculateMonthlyIncomePaygTax(
+      this.monthlyTaxableIncome$,
       this.monthlyMedicareLevy$
     );
-    this.fortnightlyTotalTaxes$ = this.itc.calculateFortnightlyTotalTaxes(
-      this.fortnightlyIncomeTax$,
+    this.fortnightlyIncomePaygTax$ = this.itc.calculateFortnightlyIncomePaygTax(
+      this.fortnightlyTaxableIncome$,
       this.fortnightlyMedicareLevy$
-    );
-    this.weeklyTotalTaxes$ = this.itc.calculateWeeklyTotalTaxes(
-      this.weeklyIncomeTax$,
-      this.weeklyMedicareLevy$
     );
 
     // low income tax offset
@@ -252,15 +306,15 @@ export class IncomeTaxCalculatorComponent implements OnInit {
     );
     this.monthlyPay$ = this.payc.calculateMonthlyPay(
       this.monthlyTaxableIncome$,
-      this.monthlyTotalTaxes$
+      this.monthlyTotalPaygTaxes$
     );
     this.fortnightlyPay$ = this.payc.calculateFortnightlyPay(
       this.fortnightlyTaxableIncome$,
-      this.fortnightlyTotalTaxes$
+      this.fortnightlyTotalPaygTaxes$
     );
     this.weeklyPay$ = this.payc.calculateWeeklyPay(
       this.weeklyTaxableIncome$,
-      this.weeklyTotalTaxes$
+      this.weeklyTotalPaygTaxes$
     );
 
     // pay including tax offsets

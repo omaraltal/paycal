@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Observable, combineLatest } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { FormulaBasedTier } from '@pc/models/formula-based-tier';
@@ -15,9 +15,12 @@ export class TaxOffsetService {
       annuallyTaxableIncome$,
       lowAndMiddleIncomeTaxOffsetData$
     ).pipe(
-      map(([annuallyTaxableIncome, lowIncomeTaxOffsetData]) => {
+      map(([annuallyTaxableIncome, lowAndMiddleIncomeTaxOffsetData]) => {
         let offset = 0;
-        lowIncomeTaxOffsetData.some(tier => {
+        if (!lowAndMiddleIncomeTaxOffsetData) {
+          return offset;
+        }
+        lowAndMiddleIncomeTaxOffsetData.some(tier => {
           const [lower, upper] = tier.range;
           if (
             (lower === undefined || annuallyTaxableIncome >= lower) &&
@@ -39,6 +42,9 @@ export class TaxOffsetService {
     return combineLatest(annuallyTaxableIncome$, lowIncomeTaxOffsetData$).pipe(
       map(([annuallyTaxableIncome, lowIncomeTaxOffsetData]) => {
         let offset = 0;
+        if (!lowIncomeTaxOffsetData) {
+          return offset;
+        }
         lowIncomeTaxOffsetData.some(tier => {
           const [lower, upper] = tier.range;
           if (

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { Observable, combineLatest } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
-import { TaxRates } from '@pc/models/tax-rates';
-import { ResolutionService } from './resolution.service';
 import { FormulaBasedTier } from '@pc/models/formula-based-tier';
+import { ResolutionService } from './resolution.service';
 
 @Injectable()
 export class MedicareLevyService {
@@ -18,6 +17,9 @@ export class MedicareLevyService {
     return combineLatest(annuallyTaxableIncome$, medicareLevyData$).pipe(
       map(([annuallyTaxableIncome, medicareLevy]) => {
         let levy = 0;
+        if (!medicareLevy) {
+          return levy;
+        }
         medicareLevy.some(tier => {
           const [lower, upper] = tier.range;
           if (
@@ -36,16 +38,24 @@ export class MedicareLevyService {
   calculateMonthlyMedicareLevy(
     annuallyMedicareLevy$: Observable<number>
   ): Observable<number> {
-    return annuallyMedicareLevy$.pipe(map(this.res.monthlyMapper));
+    return annuallyMedicareLevy$.pipe(
+      map(annuallyMedicareLevy => this.res.monthlyMapper(annuallyMedicareLevy))
+    );
   }
   calculateFortnightlyMedicareLevy(
     annuallyMedicareLevy$: Observable<number>
   ): Observable<number> {
-    return annuallyMedicareLevy$.pipe(map(this.res.fortnightlyMapper));
+    return annuallyMedicareLevy$.pipe(
+      map(annuallyMedicareLevy =>
+        this.res.fortnightlyMapper(annuallyMedicareLevy)
+      )
+    );
   }
   calculateWeeklyMedicareLevy(
     annuallyMedicareLevy$: Observable<number>
   ): Observable<number> {
-    return annuallyMedicareLevy$.pipe(map(this.res.weeklyMapper));
+    return annuallyMedicareLevy$.pipe(
+      map(annuallyMedicareLevy => this.res.weeklyMapper(annuallyMedicareLevy))
+    );
   }
 }

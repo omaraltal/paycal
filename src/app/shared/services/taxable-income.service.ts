@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, tap } from 'rxjs/operators';
 
-import { TaxRates } from '@pc/models/tax-rates';
+import { PayFrequency } from '@pc/models/pay-frequency';
+import { Superannuation } from '@pc/models/superannuation';
 import { ResolutionService } from './resolution.service';
 
 @Injectable()
@@ -11,17 +12,22 @@ export class TaxableIncomeService {
   constructor(private res: ResolutionService) {}
 
   calculateAnnuallyTaxableIncome(
-    superannuationData$: Observable<number>,
+    superannuationData$: Observable<Superannuation>,
     income$: Observable<number>,
-    superannuationIncluded$: Observable<boolean>
+    superannuationIncluded$: Observable<boolean>,
+    payFrequency$: Observable<PayFrequency>
   ): Observable<number> {
     return combineLatest(
       superannuationData$,
       income$,
-      superannuationIncluded$
+      superannuationIncluded$,
+      payFrequency$
     ).pipe(
-      map(([superannuation, income, superannuationIncluded]) => {
-        return superannuationIncluded ? income / (1 + superannuation) : income;
+      map(([superannuation, income, superannuationIncluded, payFrequency]) => {
+        const taxableIncome = superannuationIncluded
+          ? income / (1 + superannuation.rate)
+          : income;
+        return this.res.annuallyMapper(taxableIncome, payFrequency);
       }),
       shareReplay(1)
     );
@@ -31,8 +37,9 @@ export class TaxableIncomeService {
     annuallyTaxableIncome$: Observable<number>
   ): Observable<number> {
     return annuallyTaxableIncome$.pipe(
-      map(this.res.monthlyMapper),
-      shareReplay(1)
+      map(annuallyTaxableIncome =>
+        this.res.monthlyMapper(annuallyTaxableIncome)
+      )
     );
   }
 
@@ -40,8 +47,9 @@ export class TaxableIncomeService {
     annuallyTaxableIncome$: Observable<number>
   ): Observable<number> {
     return annuallyTaxableIncome$.pipe(
-      map(this.res.fortnightlyMapper),
-      shareReplay(1)
+      map(annuallyTaxableIncome =>
+        this.res.fortnightlyMapper(annuallyTaxableIncome)
+      )
     );
   }
 
@@ -49,8 +57,7 @@ export class TaxableIncomeService {
     annuallyTaxableIncome$: Observable<number>
   ): Observable<number> {
     return annuallyTaxableIncome$.pipe(
-      map(this.res.weeklyMapper),
-      shareReplay(1)
+      map(annuallyTaxableIncome => this.res.weeklyMapper(annuallyTaxableIncome))
     );
   }
 }

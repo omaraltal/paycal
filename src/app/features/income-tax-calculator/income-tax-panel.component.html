@@ -5,7 +5,7 @@
       Pay
     </div>
     <div class="value">
-      {{ pay }}
+      {{ pay | currency }}
     </div>
   </div>
   <div class="information">
@@ -13,7 +13,7 @@
       Taxable Income
     </div>
     <div class="value">
-      {{ taxableIncome }}
+      {{ taxableIncome | currency }}
     </div>
   </div>
   <div class="information">
@@ -21,7 +21,7 @@
       Superannuation
     </div>
     <div class="value">
-      {{ superannuation }}
+      {{ superannuation | currency }}
     </div>
   </div>
   <div class="information">
@@ -29,7 +29,7 @@
       Total Taxes
     </div>
     <div class="value">
-      {{ totalTaxes }}
+      {{ totalTaxes | currency }}
     </div>
   </div>
   <div class="information">
@@ -37,7 +37,7 @@
       Income Tax
     </div>
     <div class="value">
-      {{ incomeTax }}
+      {{ incomeTax | currency }}
     </div>
   </div>
   <div class="information">
@@ -45,7 +45,7 @@
       Medicare Levy
     </div>
     <div class="value">
-      {{ medicareLevy }}
+      {{ medicareLevy | currency }}
     </div>
   </div>
   <div class="information" *ngIf="taxOffset !== undefined">
@@ -53,7 +53,7 @@
       Tax Offsets
     </div>
     <div class="value">
-      {{ taxOffset }}
+      {{ taxOffset | currency }}
     </div>
   </div>
 </div>
