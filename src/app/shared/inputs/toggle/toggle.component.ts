@@ -11,12 +11,12 @@ export class ToggleComponent {
   @Input()
   checked = false;
   @Input() label: string;
-  @Output() changetoggleState = new EventEmitter<boolean>();
+  @Output() checkedChange = new EventEmitter<boolean>();
   id = `shared-toggle-${++id}`;
 
   toggle() {
     this.checked = !this.checked;
-    this.changetoggleState.emit(this.checked);
+    this.checkedChange.emit(this.checked);
   }
 
   onKeydown(event: any) {

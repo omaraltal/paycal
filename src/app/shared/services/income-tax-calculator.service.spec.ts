@@ -26,7 +26,11 @@ monthlyIncomeTaxTable_2018_19.forEach(data => {
       });
       it('should pay the correct tax', () => {
         incomeTaxService
-          .calculateMonthlyTotalPaygTaxes(of(income), weeklyPaygData$)
+          .calculateMonthlyTotalPaygTaxes(
+            of(ResidencyStatus.RESIDENT),
+            of(income),
+            weeklyPaygData$
+          )
           .subscribe(tax => {
             expect(tax).toEqual(withTaxFreeThreshold);
           });
@@ -41,7 +45,11 @@ monthlyIncomeTaxTable_2018_19.forEach(data => {
       });
       it('should pay the correct tax', () => {
         incomeTaxService
-          .calculateMonthlyTotalPaygTaxes(of(income), weeklyPaygData$)
+          .calculateMonthlyTotalPaygTaxes(
+            of(ResidencyStatus.RESIDENT_NO_TAX_FREE_THRESHOLD),
+            of(income),
+            weeklyPaygData$
+          )
           .subscribe(tax => {
             expect(tax).toEqual(noTaxFreeThreshold);
           });
@@ -63,7 +71,11 @@ fortnightlyIncomeTaxTable_2018_19.forEach(data => {
       });
       it('should pay the correct tax', () => {
         incomeTaxService
-          .calculateFortnightlyTotalPaygTaxes(of(income), weeklyPaygData$)
+          .calculateFortnightlyTotalPaygTaxes(
+            of(ResidencyStatus.RESIDENT),
+            of(income),
+            weeklyPaygData$
+          )
           .subscribe(tax => {
             expect(tax).toEqual(withTaxFreeThreshold);
           });
@@ -78,7 +90,11 @@ fortnightlyIncomeTaxTable_2018_19.forEach(data => {
       });
       it('should pay the correct tax', () => {
         incomeTaxService
-          .calculateFortnightlyTotalPaygTaxes(of(income), weeklyPaygData$)
+          .calculateFortnightlyTotalPaygTaxes(
+            of(ResidencyStatus.RESIDENT_NO_TAX_FREE_THRESHOLD),
+            of(income),
+            weeklyPaygData$
+          )
           .subscribe(tax => {
             expect(tax).toEqual(noTaxFreeThreshold);
           });
@@ -100,7 +116,11 @@ weeklyIncomeTaxTable_2018_19.forEach(data => {
       });
       it('should pay the correct tax', () => {
         incomeTaxService
-          .calculateWeeklyTotalPaygTaxes(of(income), weeklyPaygData$)
+          .calculateWeeklyTotalPaygTaxes(
+            of(ResidencyStatus.RESIDENT),
+            of(income),
+            weeklyPaygData$
+          )
           .subscribe(tax => {
             expect(tax).toEqual(withTaxFreeThreshold);
           });
@@ -115,7 +135,11 @@ weeklyIncomeTaxTable_2018_19.forEach(data => {
       });
       it('should pay the correct tax', () => {
         incomeTaxService
-          .calculateWeeklyTotalPaygTaxes(of(income), weeklyPaygData$)
+          .calculateWeeklyTotalPaygTaxes(
+            of(ResidencyStatus.RESIDENT_NO_TAX_FREE_THRESHOLD),
+            of(income),
+            weeklyPaygData$
+          )
           .subscribe(tax => {
             expect(tax).toEqual(noTaxFreeThreshold);
           });

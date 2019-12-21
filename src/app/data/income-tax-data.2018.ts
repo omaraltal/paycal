@@ -47,9 +47,9 @@ export const incomeTaxData2018: IndividualTaxData = {
   },
   [ResidencyStatus.FOREIGN_RESIDENT]: {
     tax: [
-      { range: [0, 90000], rate: 32.5 },
-      { range: [90000, 180000], rate: 37 },
-      { range: [180000, 0], rate: 45 },
+      { range: [0, 90000], rate: 0.325 },
+      { range: [90000, 180000], rate: 0.37 },
+      { range: [180000, 0], rate: 0.45 },
     ],
     payAsYouGo: [
       { income: 1730, a: 0.325, b: 0.325 },

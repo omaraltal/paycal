@@ -1,15 +1,20 @@
+@import 'variables';
+
+$currency-input-focused-border-color: $primary !default;
+$currency-input-background: $white;
+
 input {
   color: #000;
   font-size: 2rem;
   border: none;
   padding: 0 0 14px;
-  border-bottom: 2px solid #000;
-  background: white;
+  border-bottom: 3px solid #000;
+  background: none;
   font-weight: bold;
   transition: 0.2s border-color;
+  max-width: 280px;
   &:focus {
     outline: none;
-    // outline: #3a474e dashed 1px;
-    border-color: #999;
+    border-color: $currency-input-focused-border-color;
   }
 }

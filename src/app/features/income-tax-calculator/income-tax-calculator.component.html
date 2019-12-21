@@ -1,11 +1,22 @@
 <div class="row">
-  <div class="col-12 col-md-6">
+  <div class="col-12">
+    <shared-financial-year [(year)]="incomeYear"></shared-financial-year>
     <h2><span>Calculate my</span> <br />income tax <br /></h2>
+    <div></div>
     <div>
-      <shared-currency [(value)]="income"></shared-currency>
+      <shared-income
+        [(income)]="income"
+        [(frequency)]="payFrequency"
+      ></shared-income>
     </div>
     <div>
-      <shared-toggle></shared-toggle>
+      <shared-toggle
+        [(checked)]="superannuationIncluded"
+        label="including superannuation"
+      ></shared-toggle>
+    </div>
+    <div style="display: flex;">
+      <shared-radio-group [(value)]="residencyStatus"></shared-radio-group>
     </div>
     <!-- <mat-form-field> -->
     <!-- <mat-label>Frequency</mat-label> -->
@@ -17,12 +28,8 @@
         >
       </mat-select> -->
     <!-- </mat-form-field> -->
-    <div class="mt-1">
-      <mat-slide-toggle [(ngModel)]="superannuationIncluded">
-        Includes Superannuation
-      </mat-slide-toggle>
-    </div>
-    <mat-form-field>
+
+    <!-- <mat-form-field>
       <mat-label>Income year</mat-label>
       <mat-select [(ngModel)]="incomeYear">
         <mat-option *ngFor="let year of incomeYears" [value]="year">{{
@@ -44,7 +51,7 @@
           {{ status.value }}
         </mat-radio-button>
       </mat-radio-group>
-    </div>
+    </div> -->
   </div>
 </div>
 <div class="result">

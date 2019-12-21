@@ -1,0 +1,10 @@
+<div class="financial-years">
+  <div
+    class="year"
+    *ngFor="let yearData of financialYears"
+    (click)="selectYear(yearData)"
+    [ngClass]="{ selected: yearData.year === year }"
+  >
+    {{ yearData.label }}
+  </div>
+</div>

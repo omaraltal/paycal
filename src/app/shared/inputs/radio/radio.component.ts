@@ -12,27 +12,28 @@ import { Keys } from '@pc/models/keys';
 import { ResidencyStatus } from '@pc/models/residency-status';
 
 @Component({
-  selector: 'shared-radio',
+  selector: 'shared-radio-group',
   templateUrl: './radio.component.html',
   styleUrls: ['./radio.component.scss'],
 })
 export class RadioComponent {
   @ViewChildren('radio') radios: QueryList<ElementRef>;
-  @Input() checkedItem: string;
-  @Output() changeSelection = new EventEmitter<string>();
+  @Input() value: string;
+  @Output() valueChange = new EventEmitter<string>();
   data: Array<string> = [
     ResidencyStatus.RESIDENT,
+    ResidencyStatus.RESIDENT_NO_TAX_FREE_THRESHOLD,
     ResidencyStatus.FOREIGN_RESIDENT,
     ResidencyStatus.WORKING_HOLIDAY,
   ];
 
   get focusableItem(): string {
-    return this.checkedItem !== undefined ? this.checkedItem : this.data[0];
+    return this.value !== undefined ? this.value : this.data[0];
   }
 
   check(item: string): void {
-    this.changeSelection.emit(item);
-    this.checkedItem = item;
+    this.valueChange.emit(item);
+    this.value = item;
   }
 
   focus(idx: number): void {

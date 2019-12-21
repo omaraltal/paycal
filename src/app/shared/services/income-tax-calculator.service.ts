@@ -1,76 +1,109 @@
 import { Injectable } from '@angular/core';
 
 import { combineLatest, Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { debounceTime, filter, map, shareReplay } from 'rxjs/operators';
 
 import { PayAsYouGo } from '@pc/models/pay-as-you-go';
 import { PayFrequency } from '@pc/models/pay-frequency';
+import { ResidencyStatus } from '@pc/models/residency-status';
 import { ResolutionService } from './resolution.service';
 
 @Injectable()
 export class IncomeTaxService {
   constructor(private res: ResolutionService) {}
+
   calculateAnnuallyIncomeTax(
     taxRatesData$: Observable<{ range: number[]; rate: number }[]>,
     annuallyTaxableIncome$: Observable<number>
   ): Observable<number> {
     return combineLatest(taxRatesData$, annuallyTaxableIncome$).pipe(
-      map(([taxRatesData, annuallyTaxableIncome]) => ({
-        annuallyTaxableIncome,
-        rates: taxRatesData,
-      })),
-      map(({ annuallyTaxableIncome, rates }): number =>
-        rates.reverse().reduce((acc, curr) => {
-          const [lower, upper] = curr.range;
-          let tierTaxableIncome = 0;
-          if (annuallyTaxableIncome >= lower) {
-            if (upper) {
-              tierTaxableIncome =
-                Math.min(upper, annuallyTaxableIncome) - lower;
-            } else {
-              tierTaxableIncome = annuallyTaxableIncome - lower;
-            }
-          }
-          return acc + tierTaxableIncome * curr.rate;
-        }, 0)
-      ),
-      map(tax => Math.round(tax)),
+      debounceTime(0),
+      map(([taxRatesData, annuallyTaxableIncome]) => {
+        return this.calculateIncomeTax(
+          annuallyTaxableIncome,
+          taxRatesData,
+          PayFrequency.ANNUALLY
+        );
+      }),
       shareReplay(1)
     );
   }
 
-  calculateMonthlyIncomePaygTax(
-    monthlyTotalTaxes$: Observable<number>,
-    monthlyMedicareLevy$: Observable<number>
+  calculateMonthlyIncomeTax(
+    residencyStatus$: Observable<ResidencyStatus>,
+    taxRatesData$: Observable<{ range: number[]; rate: number }[]>,
+    monthlyTaxableIncome$: Observable<number>
   ): Observable<number> {
-    return combineLatest(monthlyTotalTaxes$, monthlyMedicareLevy$).pipe(
-      map(
-        ([monthlyTotalTaxes, monthlyMedicareLevy]) =>
-          monthlyTotalTaxes - monthlyMedicareLevy
-      )
+    return combineLatest(
+      residencyStatus$,
+      taxRatesData$,
+      monthlyTaxableIncome$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus === ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(([residencyStatus, taxRatesData, monthlyTaxableIncome]) => {
+        return this.calculateIncomeTax(
+          monthlyTaxableIncome,
+          taxRatesData,
+          PayFrequency.MONTHLY
+        );
+      }),
+      shareReplay(1)
     );
   }
 
-  calculateFortnightlyIncomePaygTax(
-    fortnightlyTotalTaxes$: Observable<number>,
-    fortnightlyMedicareLevy$: Observable<number>
+  calculateFortnightlyIncomeTax(
+    residencyStatus$: Observable<ResidencyStatus>,
+    taxRatesData$: Observable<{ range: number[]; rate: number }[]>,
+    fortnightlyTaxableIncome$: Observable<number>
   ): Observable<number> {
-    return combineLatest(fortnightlyTotalTaxes$, fortnightlyMedicareLevy$).pipe(
-      map(
-        ([fortnightlyTotalTaxes, fortnightlyMedicareLevy]) =>
-          fortnightlyTotalTaxes - fortnightlyMedicareLevy
-      )
+    return combineLatest(
+      residencyStatus$,
+      taxRatesData$,
+      fortnightlyTaxableIncome$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus === ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(([residencyStatus, taxRatesData, fortnightlyTaxableIncome]) => {
+        return this.calculateIncomeTax(
+          fortnightlyTaxableIncome,
+          taxRatesData,
+          PayFrequency.FORTNIGHTLY
+        );
+      }),
+      shareReplay(1)
     );
   }
 
-  calculateWeeklyIncomePaygTax(
-    weeklyTotalTaxes$: Observable<number>,
-    weeklyMedicareLevy$: Observable<number>
+  calculateWeeklyIncomeTax(
+    residencyStatus$: Observable<ResidencyStatus>,
+    taxRatesData$: Observable<{ range: number[]; rate: number }[]>,
+    weeklyTaxableIncome$: Observable<number>
   ): Observable<number> {
-    return combineLatest(weeklyTotalTaxes$, weeklyMedicareLevy$).pipe(
-      map(([totalTaxes, medicareLevy]) => {
-        return totalTaxes - medicareLevy;
-      })
+    return combineLatest(
+      residencyStatus$,
+      taxRatesData$,
+      weeklyTaxableIncome$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus === ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(([residencyStatus, taxRatesData, weeklyTaxableIncome]) => {
+        return this.calculateIncomeTax(
+          weeklyTaxableIncome,
+          taxRatesData,
+          PayFrequency.FORTNIGHTLY
+        );
+      }),
+      shareReplay(1)
     );
   }
 
@@ -79,32 +112,187 @@ export class IncomeTaxService {
     annuallyMedicareLevy$: Observable<number>
   ) {
     return combineLatest(annuallyIncomeTax$, annuallyMedicareLevy$).pipe(
-      map(([incomeTax, medicareLevy]) => incomeTax + medicareLevy)
+      map(([incomeTax, medicareLevy]) => incomeTax + medicareLevy),
+      shareReplay(1)
     );
   }
 
-  calculateMonthlyTotalPaygTaxes(
-    monthlyTaxableIncome$: Observable<number>,
-    payAsYouGoData$: Observable<PayAsYouGo[]>
-  ): Observable<number> {
-    return combineLatest(monthlyTaxableIncome$, payAsYouGoData$).pipe(
-      map(([monthlyTaxableIncome, payAsYouGoData]) =>
-        this.calculatePayAsYouGo(
-          monthlyTaxableIncome,
-          payAsYouGoData,
-          PayFrequency.MONTHLY
-        )
+  calculateMonthlyTotalTaxes(
+    residencyStatus$: Observable<ResidencyStatus>,
+    monthlyIncomeTax$: Observable<number>,
+    monthlyMedicareLevy$: Observable<number>
+  ) {
+    return combineLatest(
+      residencyStatus$,
+      monthlyIncomeTax$,
+      monthlyMedicareLevy$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus === ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(
+        ([residencyStatus, incomeTax, medicareLevy]) => incomeTax + medicareLevy
       ),
       shareReplay(1)
     );
   }
 
+  calculateFortnightlyTotalTaxes(
+    residencyStatus$: Observable<ResidencyStatus>,
+    fortnightlyIncomeTax$: Observable<number>,
+    fortnightlyMedicareLevy$: Observable<number>
+  ) {
+    return combineLatest(
+      residencyStatus$,
+      fortnightlyIncomeTax$,
+      fortnightlyMedicareLevy$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus === ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(
+        ([residencyStatus, incomeTax, medicareLevy]) => incomeTax + medicareLevy
+      ),
+      shareReplay(1)
+    );
+  }
+
+  calculateWeeklyTotalTaxes(
+    residencyStatus$: Observable<ResidencyStatus>,
+    weeklyIncomeTax$: Observable<number>,
+    weeklyMedicareLevy$: Observable<number>
+  ) {
+    return combineLatest(
+      residencyStatus$,
+      weeklyIncomeTax$,
+      weeklyMedicareLevy$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus === ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(
+        ([residencyStatus, incomeTax, medicareLevy]) => incomeTax + medicareLevy
+      ),
+      shareReplay(1)
+    );
+  }
+
+  calculateMonthlyIncomePaygTax(
+    residencyStatus$: Observable<ResidencyStatus>,
+    monthlyTotalTaxes$: Observable<number>,
+    monthlyMedicareLevy$: Observable<number>
+  ): Observable<number> {
+    return combineLatest(
+      residencyStatus$,
+      monthlyTotalTaxes$,
+      monthlyMedicareLevy$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus !== ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(
+        ([residencyStatus, monthlyTotalTaxes, monthlyMedicareLevy]) =>
+          monthlyTotalTaxes - monthlyMedicareLevy
+      ),
+      shareReplay(1)
+    );
+  }
+
+  calculateFortnightlyIncomePaygTax(
+    residencyStatus$: Observable<ResidencyStatus>,
+    fortnightlyTotalTaxes$: Observable<number>,
+    fortnightlyMedicareLevy$: Observable<number>
+  ): Observable<number> {
+    return combineLatest(
+      residencyStatus$,
+      fortnightlyTotalTaxes$,
+      fortnightlyMedicareLevy$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus !== ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(
+        ([residencyStatus, fortnightlyTotalTaxes, fortnightlyMedicareLevy]) =>
+          fortnightlyTotalTaxes - fortnightlyMedicareLevy
+      ),
+      shareReplay(1)
+    );
+  }
+
+  calculateWeeklyIncomePaygTax(
+    residencyStatus$: Observable<ResidencyStatus>,
+    weeklyTotalTaxes$: Observable<number>,
+    weeklyMedicareLevy$: Observable<number>
+  ): Observable<number> {
+    return combineLatest(
+      residencyStatus$,
+      weeklyTotalTaxes$,
+      weeklyMedicareLevy$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus !== ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(([residencyStatus, totalTaxes, medicareLevy]) => {
+        return totalTaxes - medicareLevy;
+      }),
+      shareReplay(1)
+    );
+  }
+
+  calculateMonthlyTotalPaygTaxes(
+    residencyStatus$: Observable<ResidencyStatus>,
+    monthlyTaxableIncome$: Observable<number>,
+    payAsYouGoData$: Observable<PayAsYouGo[]>
+  ): Observable<number> {
+    return combineLatest(
+      residencyStatus$,
+      monthlyTaxableIncome$,
+      payAsYouGoData$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus !== ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(([residencyStatus, monthlyTaxableIncome, payAsYouGoData]) => {
+        return this.calculatePayAsYouGo(
+          monthlyTaxableIncome,
+          payAsYouGoData,
+          PayFrequency.MONTHLY
+        );
+      }),
+      shareReplay(1)
+    );
+  }
+
   calculateFortnightlyTotalPaygTaxes(
+    residencyStatus$: Observable<ResidencyStatus>,
     fortnightlyTaxableIncome$: Observable<number>,
     payAsYouGoData$: Observable<PayAsYouGo[]>
   ): Observable<number> {
-    return combineLatest(fortnightlyTaxableIncome$, payAsYouGoData$).pipe(
-      map(([fortnightlyTaxableIncome, payAsYouGoData]) =>
+    return combineLatest(
+      residencyStatus$,
+      fortnightlyTaxableIncome$,
+      payAsYouGoData$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus !== ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(([residencyStatus, fortnightlyTaxableIncome, payAsYouGoData]) =>
         this.calculatePayAsYouGo(
           fortnightlyTaxableIncome,
           payAsYouGoData,
@@ -116,11 +304,21 @@ export class IncomeTaxService {
   }
 
   calculateWeeklyTotalPaygTaxes(
+    residencyStatus$: Observable<ResidencyStatus>,
     weeklyTaxableIncome$: Observable<number>,
     payAsYouGoData$: Observable<PayAsYouGo[]>
   ): Observable<number> {
-    return combineLatest(weeklyTaxableIncome$, payAsYouGoData$).pipe(
-      map(([weeklyTaxableIncome, payAsYouGoData]) =>
+    return combineLatest(
+      residencyStatus$,
+      weeklyTaxableIncome$,
+      payAsYouGoData$
+    ).pipe(
+      debounceTime(0),
+      filter(
+        ([residencyStatus]) =>
+          residencyStatus !== ResidencyStatus.WORKING_HOLIDAY
+      ),
+      map(([residencyStatus, weeklyTaxableIncome, payAsYouGoData]) =>
         this.calculatePayAsYouGo(
           weeklyTaxableIncome,
           payAsYouGoData,
@@ -139,9 +337,48 @@ export class IncomeTaxService {
       map(
         ([annuallyTotalTaxes, annuallyTaxOffset]) =>
           annuallyTotalTaxes - annuallyTaxOffset
-      )
-      // map(tax => Math.round(tax))
+      ),
+      shareReplay(1)
     );
+  }
+
+  private calculateIncomeTax(income, rates, payFrequency): number {
+    switch (payFrequency) {
+      case PayFrequency.MONTHLY:
+        this.res.annually.fromMonthly(income);
+        break;
+      case PayFrequency.FORTNIGHTLY:
+        this.res.annually.fromFortnightly(income);
+        break;
+      case PayFrequency.WEEKLY:
+        this.res.annually.fromWeekly(income);
+        break;
+      default:
+        break;
+    }
+    const tax = rates.reverse().reduce((acc, curr) => {
+      const [lower, upper] = curr.range;
+      let tierTaxableIncome = 0;
+      if (income >= lower) {
+        if (upper) {
+          tierTaxableIncome = Math.min(upper, income) - lower;
+        } else {
+          tierTaxableIncome = income - lower;
+        }
+      }
+      return acc + tierTaxableIncome * curr.rate;
+    }, 0);
+
+    switch (payFrequency) {
+      case PayFrequency.MONTHLY:
+        return Math.round(this.res.monthly.fromAnnually(tax));
+      case PayFrequency.FORTNIGHTLY:
+        return Math.round(this.res.fortnightly.fromAnnually(tax));
+      case PayFrequency.WEEKLY:
+        return Math.round(this.res.weekly.fromAnnually(tax));
+      default:
+        return Math.round(tax);
+    }
   }
 
   private calculatePayAsYouGo(taxableIncome, payAsYouGoData, payFrequency) {

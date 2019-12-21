@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { CheckboxComponent } from './inputs/checkbox/checkbox.component';
 import { CurrencyComponent } from './inputs/currency/currency.component';
 import { DropdownComponent } from './inputs/dropdown/dropdown.component';
+import { FinancialYearComponent } from './inputs/financial-year/financial-year.component';
+import { IncomeComponent } from './inputs/income/income.component';
 import { LabelComponent } from './inputs/label/label.component';
 import { RadioComponent } from './inputs/radio/radio.component';
 import { ToggleComponent } from './inputs/toggle/toggle.component';
@@ -29,6 +31,8 @@ import { TaxableIncomeService } from './services/taxable-income.service';
     RadioComponent,
     DropdownComponent,
     LabelComponent,
+    FinancialYearComponent,
+    IncomeComponent,
   ],
   exports: [
     CurrencyComponent,
@@ -38,6 +42,8 @@ import { TaxableIncomeService } from './services/taxable-income.service';
     RadioComponent,
     DropdownComponent,
     LabelComponent,
+    FinancialYearComponent,
+    IncomeComponent,
   ],
   providers: [
     IncomeTaxService,

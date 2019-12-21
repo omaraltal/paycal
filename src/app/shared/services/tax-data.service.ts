@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { debounceTime, map, shareReplay } from 'rxjs/operators';
 
 import { INCOME_TAX_DATA } from '@pc/data/income-tax-data';
 import { ApplicableIndividualTaxData } from '@pc/models/applicable-individual-tax-data';
 import { FormulaBasedTier } from '@pc/models/formula-based-tier';
 import { PayAsYouGo } from '@pc/models/pay-as-you-go';
-import { PayFrequency } from '@pc/models/pay-frequency';
 import { ResidencyStatus } from '@pc/models/residency-status';
 import { Superannuation } from '@pc/models/superannuation';
 
@@ -17,16 +16,11 @@ export class TaxDataService {
 
   getApplicableTaxData(
     taxYear$: Observable<number>,
-    residencyStatus$: Observable<ResidencyStatus>,
-    payFrequency$: Observable<PayFrequency>
+    residencyStatus$: Observable<ResidencyStatus>
   ): Observable<ApplicableIndividualTaxData> {
-    return combineLatest(
-      this.taxData$,
-      taxYear$,
-      residencyStatus$,
-      payFrequency$
-    ).pipe(
-      map(([taxData, taxYear, residencyStatus, payFrequency]) => {
+    return combineLatest(this.taxData$, taxYear$, residencyStatus$).pipe(
+      debounceTime(0),
+      map(([taxData, taxYear, residencyStatus]) => {
         const selectedYearTaxData = taxData[taxYear];
         const {
           superannuation,
@@ -40,9 +34,12 @@ export class TaxDataService {
           sfss,
           sfssNoTaxFree,
         } = selectedYearTaxData;
-        const { tax, payAsYouGo } = selectedYearTaxData[
-          ResidencyStatus.RESIDENT
-        ];
+
+        const { tax } = selectedYearTaxData[residencyStatus];
+        let payAsYouGo;
+        if (residencyStatus !== ResidencyStatus.WORKING_HOLIDAY) {
+          payAsYouGo = selectedYearTaxData[residencyStatus].payAsYouGo;
+        }
 
         switch (residencyStatus) {
           case ResidencyStatus.RESIDENT:
@@ -110,19 +107,29 @@ export class TaxDataService {
   }
 
   getLowIncomeTaxOffsetData(
-    applicableTaxData$: Observable<ApplicableIndividualTaxData>
+    applicableTaxData$: Observable<ApplicableIndividualTaxData>,
+    residencyStatus$: Observable<ResidencyStatus>
   ): Observable<FormulaBasedTier[]> {
-    return applicableTaxData$.pipe(
-      map(data => data.lowIncomeTaxOffset),
+    return combineLatest(applicableTaxData$, residencyStatus$).pipe(
+      map(([data, residencyStatus]) =>
+        residencyStatus === ResidencyStatus.RESIDENT
+          ? data.lowIncomeTaxOffset
+          : null
+      ),
       shareReplay(1)
     );
   }
 
   getLowAndMiddleIncomeTaxOffsetData(
-    applicableTaxData$: Observable<ApplicableIndividualTaxData>
+    applicableTaxData$: Observable<ApplicableIndividualTaxData>,
+    residencyStatus$: Observable<ResidencyStatus>
   ): Observable<FormulaBasedTier[]> {
-    return applicableTaxData$.pipe(
-      map(data => data.lowAndMiddleIncomeTaxOffset),
+    return combineLatest(applicableTaxData$, residencyStatus$).pipe(
+      map(([data, residencyStatus]) =>
+        residencyStatus === ResidencyStatus.RESIDENT
+          ? data.lowAndMiddleIncomeTaxOffset
+          : null
+      ),
       shareReplay(1)
     );
   }

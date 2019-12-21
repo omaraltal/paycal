@@ -1,0 +1,14 @@
+<div class="income-container">
+  <shared-currency [(value)]="income"></shared-currency>
+  <span class="separator">&nbsp;/&nbsp;</span>
+  <shared-dropdown [(value)]="frequency" [data]="payFrequency | keyvalue">
+  </shared-dropdown>
+</div>
+<!-- <ul>
+  <li
+    *ngFor="let item of payFrequency | keyvalue"
+    (click)="selectFrequency(item.value)"
+  >
+    {{ item.value }}
+  </li>
+</ul> -->

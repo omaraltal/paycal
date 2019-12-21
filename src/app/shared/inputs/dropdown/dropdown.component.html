@@ -1,6 +1,6 @@
 <ul
   class="dropdown"
-  [ngClass]="{ expanded: expanded, selected: selected }"
+  [ngClass]="{ expanded: expanded, selected: value }"
   (click)="$event.stopPropagation()"
 >
   <li
@@ -13,9 +13,10 @@
   >
     <span>
       <span>
-        <span id="dropdown-label-{{ id }}" class="label">{{ label }}</span>
-        <br />
-        <span *ngIf="selected">{{ selected }}</span>
+        <span id="dropdown-label-{{ id }}" class="label" *ngIf="!value">{{
+          label
+        }}</span>
+        <span *ngIf="value">{{ value }}</span>
       </span>
       <i class="caret" [ngClass]="{ up: expanded, down: !expanded }"></i>
     </span>
@@ -29,7 +30,7 @@
         *ngFor="let item of data"
         id="{{ item }}-{{ id }}"
         (click)="setectItem(item)"
-        [ngClass]="{ selected: selected === item }"
+        [ngClass]="{ selected: value === item }"
       >
         {{ item }}
       </li>

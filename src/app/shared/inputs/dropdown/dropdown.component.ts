@@ -10,11 +10,28 @@ let id = 0;
   templateUrl: './dropdown.component.html',
 })
 export class DropdownComponent implements OnInit {
-  @Input() label = 'Income year';
+  @Input() label: string;
   @Input() expanded = false;
-  @Input() data = [2017, 2018, 2019];
-  @Output() selectionChange = new EventEmitter<any>();
-  selected: any;
+  innerData: any;
+  @Input() set data(data: any) {
+    if (data[0].key && data[0].value) {
+      this.innerData = data.map(d => d.value);
+    } else {
+      this.innerData = data;
+    }
+  }
+  get data(): any {
+    return this.innerData;
+  }
+  innerValue: any;
+  @Input() set value(value: any) {
+    this.innerValue = value;
+    this.valueChange.emit(value);
+  }
+  get value(): any {
+    return this.innerValue;
+  }
+  @Output() valueChange = new EventEmitter<any>();
 
   id = ++id;
 
@@ -29,8 +46,7 @@ export class DropdownComponent implements OnInit {
   }
 
   setectItem(item) {
-    this.selected = item;
-    this.selectionChange.emit(item);
+    this.value = item;
     this.expanded = false;
   }
 

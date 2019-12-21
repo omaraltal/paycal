@@ -1,13 +1,13 @@
 <div class="toggle">
-  <shared-label [label]="label" [id]="id" class="pb-1"></shared-label>
+  <label [id]="id" class="pb-1" (click)="toggle()">{{ label }}</label>
   <span
     role="checkbox"
     attr.aria-checked="{{ checked }}"
     class="toggle-wrapper"
     [ngClass]="{ checked: checked }"
-    (click)="toggle()"
     tabindex="0"
     (keydown)="onKeydown($event)"
+    (click)="toggle()"
     attr.aria-labelledby="{{ id }}"
   >
     <span class="toggle-btn"></span>

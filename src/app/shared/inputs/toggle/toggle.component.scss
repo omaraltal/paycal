@@ -2,9 +2,11 @@
 
 $toggle-width: 3rem !default;
 $toggle-padding: 0.1875rem !default;
-$toggle-background: $gray-500 !default;
+$toggle-background: $gray-300 !default;
+$toggle-border-width: 0.15rem;
+$toggle-border: $toggle-border-width solid $black;
 $toggle-focus-background: lighten($toggle-background, 5%) !default;
-$toggle-checked-background: $teal !default;
+$toggle-checked-background: $primary !default;
 $toggle-checked-focus-background: lighten(
   $toggle-checked-background,
   5%
@@ -17,15 +19,20 @@ $enable-toggle-rounded: true !default;
 $enable-toggle-transition: true !default;
 
 .toggle {
+  margin-top: 20px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 700;
 }
 .toggle-wrapper {
   display: inline-block;
   padding: $toggle-padding;
   width: $toggle-width;
   background: $toggle-background;
-  border: 2px solid black;
+  border: $toggle-border;
   @if $enable-toggle-rounded {
     border-radius: $toggle-width/2;
   }
@@ -39,7 +46,7 @@ $enable-toggle-transition: true !default;
     width: $toggle-button-size;
     height: $toggle-button-size;
     background: $white;
-    border: 2px solid black;
+    border: $toggle-border;
     @if $enable-toggle-rounded {
       border-radius: $toggle-button-size / 2;
     }
@@ -54,7 +61,8 @@ $enable-toggle-transition: true !default;
   &.checked {
     background: $toggle-checked-background;
     .toggle-btn {
-      left: $toggle-button-size;
+      left: $toggle-width - $toggle-button-size - (2 * $toggle-border-width) -
+        (2 * $toggle-padding);
     }
     &:focus {
       background: $toggle-checked-focus-background;

@@ -1,22 +1,43 @@
+@import 'variables';
+
+$radio-padding: 0.2rem !default;
+$radio-background: $gray-300 !default;
+$radio-border-width: 0.14rem;
+$radio-checked-background: $primary !default;
+// $radio-size: 1.4rem;
+$radio-button-size: 1rem;
+
 [role='radiogroup'] {
-  display: inline-block;
-  padding: 3px;
-  border-radius: 30px;
-  border: solid 1px #999;
-  background: #efefef;
+  margin-top: 20px;
 }
+
 [role='radio'] {
+  margin-right: 20px;
+}
+.radio {
   display: inline-block;
-  padding: 5px 15px;
-  border-radius: 20px;
-  transition: 0.2s all;
-  user-select: none;
-  color: #666;
-  &:focus {
-    color: black;
+  font-size: 0;
+  border: $radio-border-width solid black;
+  padding: $radio-padding;
+  border-radius: 3rem;
+  margin-right: 5px;
+  background: $radio-background;
+  [aria-checked='true'] & {
+    background-color: $radio-checked-background;
   }
-  &[aria-checked='true'] {
-    background-color: #41c3f7;
-    color: white;
+}
+
+.radio-btn {
+  display: inline-block;
+  opacity: 0;
+  width: $radio-button-size;
+  height: $radio-button-size;
+  border-radius: $radio-button-size/2;
+  border: $radio-border-width solid black;
+  background: $primary;
+  transition: 0.1s linear opacity;
+  background-color: white;
+  [aria-checked='true'] & {
+    opacity: 1;
   }
 }

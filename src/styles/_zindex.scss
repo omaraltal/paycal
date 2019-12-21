@@ -1,0 +1,30 @@
+//== Z-index
+//
+//## Z-index values should always be defined in this file. This allows us to at a
+//## glance determine relative layers of our application and prevents bugs
+//## arrising from arbitrary z-index values. Do not edit the z-index scale! Only
+//## add application scoped z-index values.
+
+// Public reset
+$zIndex-reset: auto;
+
+// Z-Index Scale (PRIVATE VARIABLES, DO NOT USE)
+// --------------------------------------------------
+$zIndex-1: 100; // DON'T USE ME OUTSIDE THIS FILE
+$zIndex-2: 200; // DON'T USE ME OUTSIDE THIS FILE
+$zIndex-3: 300; // DON'T USE ME OUTSIDE THIS FILE
+$zIndex-4: 400; // DON'T USE ME OUTSIDE THIS FILE
+$zIndex-5: 500; // DON'T USE ME OUTSIDE THIS FILE
+$zIndex-6: 600; // DON'T USE ME OUTSIDE THIS FILE
+$zIndex-7: 700; // DON'T USE ME OUTSIDE THIS FILE
+$zIndex-8: 800; // DON'T USE ME OUTSIDE THIS FILE
+$zIndex-9: 900; // DON'T USE ME OUTSIDE THIS FILE
+$zIndex-10: 1000; // DON'T USE ME OUTSIDE THIS FILE
+
+// Z-Index Applications
+// --------------------------------------------------
+
+// Layout
+
+// Common Components
+$zIndex-1--dropdowns: $zIndex-1;
