@@ -44,22 +44,25 @@ export class MedicareLevyService {
         });
         return levy;
       }),
-      shareReplay({ refCount: true, bufferSize: 1 })
+      shareReplay(1)
     );
   }
   calculateMonthlyMedicareLevy(
     annuallyMedicareLevy$: Observable<number>
   ): Observable<number> {
     return annuallyMedicareLevy$.pipe(
-      map(annuallyMedicareLevy => this.res.monthlyMapper(annuallyMedicareLevy))
+      map(annuallyMedicareLevy => this.res.monthlyMapper(annuallyMedicareLevy)),
+      shareReplay(1)
     );
   }
   calculateFortnightlyMedicareLevy(
     annuallyMedicareLevy$: Observable<number>
   ): Observable<number> {
     return annuallyMedicareLevy$.pipe(
-      map(annuallyMedicareLevy =>
-        this.res.fortnightlyMapper(annuallyMedicareLevy)
+      map(
+        annuallyMedicareLevy =>
+          this.res.fortnightlyMapper(annuallyMedicareLevy),
+        shareReplay(1)
       )
     );
   }
@@ -67,7 +70,8 @@ export class MedicareLevyService {
     annuallyMedicareLevy$: Observable<number>
   ): Observable<number> {
     return annuallyMedicareLevy$.pipe(
-      map(annuallyMedicareLevy => this.res.weeklyMapper(annuallyMedicareLevy))
+      map(annuallyMedicareLevy => this.res.weeklyMapper(annuallyMedicareLevy)),
+      shareReplay(1)
     );
   }
 }

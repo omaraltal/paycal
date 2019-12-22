@@ -111,6 +111,7 @@ export class TaxDataService {
     residencyStatus$: Observable<ResidencyStatus>
   ): Observable<FormulaBasedTier[]> {
     return combineLatest(applicableTaxData$, residencyStatus$).pipe(
+      debounceTime(0),
       map(([data, residencyStatus]) =>
         residencyStatus === ResidencyStatus.RESIDENT
           ? data.lowIncomeTaxOffset
@@ -125,6 +126,7 @@ export class TaxDataService {
     residencyStatus$: Observable<ResidencyStatus>
   ): Observable<FormulaBasedTier[]> {
     return combineLatest(applicableTaxData$, residencyStatus$).pipe(
+      debounceTime(0),
       map(([data, residencyStatus]) =>
         residencyStatus === ResidencyStatus.RESIDENT
           ? data.lowAndMiddleIncomeTaxOffset

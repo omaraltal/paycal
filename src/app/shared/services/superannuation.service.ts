@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { combineLatest, Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { debounceTime, map, shareReplay } from 'rxjs/operators';
 
 import { PayFrequency } from '@pc/models/pay-frequency';
 import { Superannuation } from '@pc/models/superannuation';
@@ -23,6 +23,7 @@ export class SuperannuationService {
       superannuationIncluded$,
       payFrequency$
     ).pipe(
+      debounceTime(0),
       map(
         ([
           superannuationData,
@@ -36,7 +37,7 @@ export class SuperannuationService {
           return this.res.annuallyMapper(superannuation, payFrequency);
         }
       ),
-      shareReplay({ refCount: true, bufferSize: 1 })
+      shareReplay(1)
     );
   }
 
@@ -44,7 +45,8 @@ export class SuperannuationService {
     annuallySuperannuation$: Observable<number>
   ): Observable<number> {
     return annuallySuperannuation$.pipe(
-      map(superannuation => this.res.monthlyMapper(superannuation))
+      map(superannuation => this.res.monthlyMapper(superannuation)),
+      shareReplay(1)
     );
   }
 
@@ -52,7 +54,8 @@ export class SuperannuationService {
     annuallySuperannuation$: Observable<number>
   ): Observable<number> {
     return annuallySuperannuation$.pipe(
-      map(superannuation => this.res.fortnightlyMapper(superannuation))
+      map(superannuation => this.res.fortnightlyMapper(superannuation)),
+      shareReplay(1)
     );
   }
 
@@ -60,7 +63,8 @@ export class SuperannuationService {
     annuallySuperannuation$: Observable<number>
   ): Observable<number> {
     return annuallySuperannuation$.pipe(
-      map(superannuation => this.res.weeklyMapper(superannuation))
+      map(superannuation => this.res.weeklyMapper(superannuation)),
+      shareReplay(1)
     );
   }
 }

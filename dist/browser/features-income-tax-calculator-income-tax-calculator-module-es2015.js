@@ -26850,13 +26850,13 @@ let IncomeTaxCalculatorComponent = class IncomeTaxCalculatorComponent {
         this.fortnightlyTotalTaxes$ = this.itc.calculateFortnightlyTotalTaxes(this.residencyStatus$, this.fortnightlyIncomeTax$, this.fortnightlyMedicareLevy$);
         this.weeklyTotalTaxes$ = this.itc.calculateWeeklyTotalTaxes(this.residencyStatus$, this.weeklyIncomeTax$, this.weeklyMedicareLevy$);
         // total payg tax
-        this.monthlyTotalPaygTaxes$ = this.itc.calculateMonthlyTotalPaygTaxes(this.residencyStatus$, this.monthlyTaxableIncome$, this.payAsYouGoData$);
-        this.fortnightlyTotalPaygTaxes$ = this.itc.calculateFortnightlyTotalPaygTaxes(this.residencyStatus$, this.fortnightlyTaxableIncome$, this.payAsYouGoData$);
-        this.weeklyTotalPaygTaxes$ = this.itc.calculateWeeklyTotalPaygTaxes(this.residencyStatus$, this.weeklyTaxableIncome$, this.payAsYouGoData$);
+        this.monthlyTotalPaygTaxes$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateMonthlyTotalPaygTaxes(this.residencyStatus$, this.monthlyTaxableIncome$, this.payAsYouGoData$), this.monthlyTotalTaxes$);
+        this.fortnightlyTotalPaygTaxes$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateFortnightlyTotalPaygTaxes(this.residencyStatus$, this.fortnightlyTaxableIncome$, this.payAsYouGoData$), this.fortnightlyTotalTaxes$);
+        this.weeklyTotalPaygTaxes$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateWeeklyTotalPaygTaxes(this.residencyStatus$, this.weeklyTaxableIncome$, this.payAsYouGoData$), this.weeklyTotalTaxes$);
         // payg tax
-        this.weeklyIncomePaygTax$ = this.itc.calculateWeeklyIncomePaygTax(this.residencyStatus$, this.weeklyTaxableIncome$, this.weeklyMedicareLevy$);
-        this.monthlyIncomePaygTax$ = this.itc.calculateMonthlyIncomePaygTax(this.residencyStatus$, this.monthlyTaxableIncome$, this.monthlyMedicareLevy$);
-        this.fortnightlyIncomePaygTax$ = this.itc.calculateFortnightlyIncomePaygTax(this.residencyStatus$, this.fortnightlyTaxableIncome$, this.fortnightlyMedicareLevy$);
+        this.monthlyIncomePaygTax$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateMonthlyIncomePaygTax(this.residencyStatus$, this.monthlyTaxableIncome$, this.monthlyMedicareLevy$), this.monthlyIncomeTax$);
+        this.fortnightlyIncomePaygTax$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateFortnightlyIncomePaygTax(this.residencyStatus$, this.fortnightlyTaxableIncome$, this.fortnightlyMedicareLevy$), this.fortnightlyIncomeTax$);
+        this.weeklyIncomePaygTax$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateWeeklyIncomePaygTax(this.residencyStatus$, this.weeklyTaxableIncome$, this.weeklyMedicareLevy$), this.weeklyIncomeTax$);
         // low income tax offset
         this.annuallyLowIncomeTaxOffset$ = this.toc.calculateLowIncomeTaxOffset(this.annuallyTaxableIncome$, this.lowIncomeTaxOffsetData$);
         // low income and middle tax offset
@@ -27983,11 +27983,11 @@ let IncomeTaxService = class IncomeTaxService {
     }
     calculateWeeklyIncomeTax(residencyStatus$, taxRatesData$, weeklyTaxableIncome$) {
         return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(residencyStatus$, taxRatesData$, weeklyTaxableIncome$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["filter"])(([residencyStatus]) => residencyStatus === _pc_models_residency_status__WEBPACK_IMPORTED_MODULE_5__["ResidencyStatus"].WORKING_HOLIDAY), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([residencyStatus, taxRatesData, weeklyTaxableIncome]) => {
-            return this.calculateIncomeTax(weeklyTaxableIncome, taxRatesData, _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_4__["PayFrequency"].FORTNIGHTLY);
+            return this.calculateIncomeTax(weeklyTaxableIncome, taxRatesData, _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_4__["PayFrequency"].WEEKLY);
         }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateAnnuallyTotalTaxes(annuallyIncomeTax$, annuallyMedicareLevy$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyIncomeTax$, annuallyMedicareLevy$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([incomeTax, medicareLevy]) => incomeTax + medicareLevy), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyIncomeTax$, annuallyMedicareLevy$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([incomeTax, medicareLevy]) => incomeTax + medicareLevy), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateMonthlyTotalTaxes(residencyStatus$, monthlyIncomeTax$, monthlyMedicareLevy$) {
         return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(residencyStatus$, monthlyIncomeTax$, monthlyMedicareLevy$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["filter"])(([residencyStatus]) => residencyStatus === _pc_models_residency_status__WEBPACK_IMPORTED_MODULE_5__["ResidencyStatus"].WORKING_HOLIDAY), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([residencyStatus, incomeTax, medicareLevy]) => incomeTax + medicareLevy), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
@@ -28021,31 +28021,36 @@ let IncomeTaxService = class IncomeTaxService {
         return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(residencyStatus$, weeklyTaxableIncome$, payAsYouGoData$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["filter"])(([residencyStatus]) => residencyStatus !== _pc_models_residency_status__WEBPACK_IMPORTED_MODULE_5__["ResidencyStatus"].WORKING_HOLIDAY), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([residencyStatus, weeklyTaxableIncome, payAsYouGoData]) => this.calculatePayAsYouGo(weeklyTaxableIncome, payAsYouGoData, _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_4__["PayFrequency"].WEEKLY)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateAnnuallyIncomeTaxExcludingOffsets(annuallyTotalTaxes$, annuallyTaxOffset$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTotalTaxes$, annuallyTaxOffset$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([annuallyTotalTaxes, annuallyTaxOffset]) => annuallyTotalTaxes - annuallyTaxOffset), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTotalTaxes$, annuallyTaxOffset$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([annuallyTotalTaxes, annuallyTaxOffset]) => annuallyTotalTaxes - annuallyTaxOffset), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateIncomeTax(income, rates, payFrequency) {
+        let annualIncome;
         switch (payFrequency) {
             case _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_4__["PayFrequency"].MONTHLY:
-                this.res.annually.fromMonthly(income);
+                annualIncome = this.res.annually.fromMonthly(income);
                 break;
             case _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_4__["PayFrequency"].FORTNIGHTLY:
-                this.res.annually.fromFortnightly(income);
+                annualIncome = this.res.annually.fromFortnightly(income);
                 break;
             case _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_4__["PayFrequency"].WEEKLY:
-                this.res.annually.fromWeekly(income);
+                annualIncome = this.res.annually.fromWeekly(income);
                 break;
             default:
+                annualIncome = income;
                 break;
         }
-        const tax = rates.reverse().reduce((acc, curr) => {
+        const tax = rates
+            .concat([])
+            .reverse()
+            .reduce((acc, curr) => {
             const [lower, upper] = curr.range;
             let tierTaxableIncome = 0;
-            if (income >= lower) {
+            if (annualIncome >= lower) {
                 if (upper) {
-                    tierTaxableIncome = Math.min(upper, income) - lower;
+                    tierTaxableIncome = Math.min(upper, annualIncome) - lower;
                 }
                 else {
-                    tierTaxableIncome = income - lower;
+                    tierTaxableIncome = annualIncome - lower;
                 }
             }
             return acc + tierTaxableIncome * curr.rate;
@@ -28159,16 +28164,16 @@ let MedicareLevyService = class MedicareLevyService {
                 }
             });
             return levy;
-        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])({ refCount: true, bufferSize: 1 }));
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateMonthlyMedicareLevy(annuallyMedicareLevy$) {
-        return annuallyMedicareLevy$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyMedicareLevy => this.res.monthlyMapper(annuallyMedicareLevy)));
+        return annuallyMedicareLevy$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyMedicareLevy => this.res.monthlyMapper(annuallyMedicareLevy)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateFortnightlyMedicareLevy(annuallyMedicareLevy$) {
-        return annuallyMedicareLevy$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyMedicareLevy => this.res.fortnightlyMapper(annuallyMedicareLevy)));
+        return annuallyMedicareLevy$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyMedicareLevy => this.res.fortnightlyMapper(annuallyMedicareLevy), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1)));
     }
     calculateWeeklyMedicareLevy(annuallyMedicareLevy$) {
-        return annuallyMedicareLevy$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyMedicareLevy => this.res.weeklyMapper(annuallyMedicareLevy)));
+        return annuallyMedicareLevy$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyMedicareLevy => this.res.weeklyMapper(annuallyMedicareLevy)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
 };
 MedicareLevyService.ctorParameters = () => [
@@ -28252,19 +28257,19 @@ __webpack_require__.r(__webpack_exports__);
 
 let PayService = class PayService {
     calculateAnnuallyPay(annuallyTaxableIncome$, annuallyTotalTaxes$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, annuallyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes));
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, annuallyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateMonthlyPay(monthlyTaxableIncome$, monthlyTotalTaxes$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(monthlyTaxableIncome$, monthlyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes));
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(monthlyTaxableIncome$, monthlyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateFortnightlyPay(fortnightlyTaxableIncome$, fortnightlyTotalTaxes$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(fortnightlyTaxableIncome$, fortnightlyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes));
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(fortnightlyTaxableIncome$, fortnightlyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateWeeklyPay(weeklyTaxableIncome$, weeklyTotalTaxes$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(weeklyTaxableIncome$, weeklyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes));
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(weeklyTaxableIncome$, weeklyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateAnnuallyPayIncludingTaxOffsets(annuallyTaxableIncome$, annuallyIncomeTaxExcludingOffsets$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, annuallyIncomeTaxExcludingOffsets$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([annuallyTaxableIncome, annuallyIncomeTaxExcludingOffsets]) => annuallyTaxableIncome - annuallyIncomeTaxExcludingOffsets), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])({ refCount: true, bufferSize: 1 }));
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, annuallyIncomeTaxExcludingOffsets$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([annuallyTaxableIncome, annuallyIncomeTaxExcludingOffsets]) => annuallyTaxableIncome - annuallyIncomeTaxExcludingOffsets), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
 };
 PayService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
@@ -28432,21 +28437,21 @@ let SuperannuationService = class SuperannuationService {
         this.res = res;
     }
     calculateAnnuallySuperannuation(superannuationData$, income$, superannuationIncluded$, payFrequency$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(superannuationData$, income$, superannuationIncluded$, payFrequency$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([superannuationData, income, superannuationIncluded, payFrequency,]) => {
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(superannuationData$, income$, superannuationIncluded$, payFrequency$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([superannuationData, income, superannuationIncluded, payFrequency,]) => {
             const superannuation = superannuationIncluded
                 ? income - income / (1 + superannuationData.rate)
                 : income * superannuationData.rate;
             return this.res.annuallyMapper(superannuation, payFrequency);
-        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])({ refCount: true, bufferSize: 1 }));
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateMonthlySuperannuation(annuallySuperannuation$) {
-        return annuallySuperannuation$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(superannuation => this.res.monthlyMapper(superannuation)));
+        return annuallySuperannuation$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(superannuation => this.res.monthlyMapper(superannuation)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateFortnightlySuperannuation(annuallySuperannuation$) {
-        return annuallySuperannuation$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(superannuation => this.res.fortnightlyMapper(superannuation)));
+        return annuallySuperannuation$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(superannuation => this.res.fortnightlyMapper(superannuation)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateWeeklySuperannuation(annuallySuperannuation$) {
-        return annuallySuperannuation$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(superannuation => this.res.weeklyMapper(superannuation)));
+        return annuallySuperannuation$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(superannuation => this.res.weeklyMapper(superannuation)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
 };
 SuperannuationService.ctorParameters = () => [
@@ -28534,12 +28539,12 @@ let TaxDataService = class TaxDataService {
         return applicableTaxData$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(data => data.medicareLevy), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     getLowIncomeTaxOffsetData(applicableTaxData$, residencyStatus$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(applicableTaxData$, residencyStatus$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([data, residencyStatus]) => residencyStatus === _pc_models_residency_status__WEBPACK_IMPORTED_MODULE_5__["ResidencyStatus"].RESIDENT
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(applicableTaxData$, residencyStatus$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([data, residencyStatus]) => residencyStatus === _pc_models_residency_status__WEBPACK_IMPORTED_MODULE_5__["ResidencyStatus"].RESIDENT
             ? data.lowIncomeTaxOffset
             : null), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     getLowAndMiddleIncomeTaxOffsetData(applicableTaxData$, residencyStatus$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(applicableTaxData$, residencyStatus$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([data, residencyStatus]) => residencyStatus === _pc_models_residency_status__WEBPACK_IMPORTED_MODULE_5__["ResidencyStatus"].RESIDENT
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(applicableTaxData$, residencyStatus$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([data, residencyStatus]) => residencyStatus === _pc_models_residency_status__WEBPACK_IMPORTED_MODULE_5__["ResidencyStatus"].RESIDENT
             ? data.lowAndMiddleIncomeTaxOffset
             : null), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
@@ -28577,7 +28582,7 @@ __webpack_require__.r(__webpack_exports__);
 
 let TaxOffsetService = class TaxOffsetService {
     calculateLowAndMiddleIncomeTaxOffset(annuallyTaxableIncome$, lowAndMiddleIncomeTaxOffsetData$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, lowAndMiddleIncomeTaxOffsetData$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([annuallyTaxableIncome, lowAndMiddleIncomeTaxOffsetData]) => {
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, lowAndMiddleIncomeTaxOffsetData$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([annuallyTaxableIncome, lowAndMiddleIncomeTaxOffsetData]) => {
             let offset = 0;
             if (!lowAndMiddleIncomeTaxOffsetData) {
                 return offset;
@@ -28591,10 +28596,10 @@ let TaxOffsetService = class TaxOffsetService {
                 }
             });
             return offset;
-        }));
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateLowIncomeTaxOffset(annuallyTaxableIncome$, lowIncomeTaxOffsetData$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, lowIncomeTaxOffsetData$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([annuallyTaxableIncome, lowIncomeTaxOffsetData]) => {
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, lowIncomeTaxOffsetData$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([annuallyTaxableIncome, lowIncomeTaxOffsetData]) => {
             let offset = 0;
             if (!lowIncomeTaxOffsetData) {
                 return offset;
@@ -28608,10 +28613,10 @@ let TaxOffsetService = class TaxOffsetService {
                 }
             });
             return offset;
-        }));
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateTotalIncomeTaxOffset(annuallyLowIncomeTaxOffset$, annuallyLowAndMiddleIncomeTaxOffset$, annuallyIncomeTax$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyLowIncomeTaxOffset$, annuallyLowAndMiddleIncomeTaxOffset$, annuallyIncomeTax$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([annuallyLowIncomeTaxOffset, annuallyLowAndMiddleIncomeTaxOffset, annuallyIncomeTax,]) => Math.min(annuallyIncomeTax, annuallyLowIncomeTaxOffset + annuallyLowAndMiddleIncomeTaxOffset)));
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyLowIncomeTaxOffset$, annuallyLowAndMiddleIncomeTaxOffset$, annuallyIncomeTax$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([annuallyLowIncomeTaxOffset, annuallyLowAndMiddleIncomeTaxOffset, annuallyIncomeTax,]) => Math.min(annuallyIncomeTax, annuallyLowIncomeTaxOffset + annuallyLowAndMiddleIncomeTaxOffset)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
 };
 TaxOffsetService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
@@ -28647,7 +28652,7 @@ let TaxableIncomeService = class TaxableIncomeService {
         this.res = res;
     }
     calculateAnnuallyTaxableIncome(superannuationData$, income$, superannuationIncluded$, payFrequency$) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(superannuationData$, income$, superannuationIncluded$, payFrequency$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([superannuation, income, superannuationIncluded, payFrequency]) => {
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(superannuationData$, income$, superannuationIncluded$, payFrequency$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(([superannuation, income, superannuationIncluded, payFrequency]) => {
             const taxableIncome = superannuationIncluded
                 ? income / (1 + superannuation.rate)
                 : income;
@@ -28655,13 +28660,13 @@ let TaxableIncomeService = class TaxableIncomeService {
         }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateMonthlyTaxableIncome(annuallyTaxableIncome$) {
-        return annuallyTaxableIncome$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyTaxableIncome => this.res.monthlyMapper(annuallyTaxableIncome)));
+        return annuallyTaxableIncome$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyTaxableIncome => this.res.monthlyMapper(annuallyTaxableIncome)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateFortnightlyTaxableIncome(annuallyTaxableIncome$) {
-        return annuallyTaxableIncome$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyTaxableIncome => this.res.fortnightlyMapper(annuallyTaxableIncome)));
+        return annuallyTaxableIncome$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyTaxableIncome => this.res.fortnightlyMapper(annuallyTaxableIncome)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
     calculateWeeklyTaxableIncome(annuallyTaxableIncome$) {
-        return annuallyTaxableIncome$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyTaxableIncome => this.res.weeklyMapper(annuallyTaxableIncome)));
+        return annuallyTaxableIncome$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(annuallyTaxableIncome => this.res.weeklyMapper(annuallyTaxableIncome)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
     }
 };
 TaxableIncomeService.ctorParameters = () => [

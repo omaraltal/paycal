@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { combineLatest, Observable } from 'rxjs';
-import { map, shareReplay, tap } from 'rxjs/operators';
+import { debounceTime, map, shareReplay } from 'rxjs/operators';
 
 import { PayFrequency } from '@pc/models/pay-frequency';
 import { Superannuation } from '@pc/models/superannuation';
@@ -23,6 +23,7 @@ export class TaxableIncomeService {
       superannuationIncluded$,
       payFrequency$
     ).pipe(
+      debounceTime(0),
       map(([superannuation, income, superannuationIncluded, payFrequency]) => {
         const taxableIncome = superannuationIncluded
           ? income / (1 + superannuation.rate)
@@ -39,7 +40,8 @@ export class TaxableIncomeService {
     return annuallyTaxableIncome$.pipe(
       map(annuallyTaxableIncome =>
         this.res.monthlyMapper(annuallyTaxableIncome)
-      )
+      ),
+      shareReplay(1)
     );
   }
 
@@ -49,7 +51,8 @@ export class TaxableIncomeService {
     return annuallyTaxableIncome$.pipe(
       map(annuallyTaxableIncome =>
         this.res.fortnightlyMapper(annuallyTaxableIncome)
-      )
+      ),
+      shareReplay(1)
     );
   }
 
@@ -57,7 +60,10 @@ export class TaxableIncomeService {
     annuallyTaxableIncome$: Observable<number>
   ): Observable<number> {
     return annuallyTaxableIncome$.pipe(
-      map(annuallyTaxableIncome => this.res.weeklyMapper(annuallyTaxableIncome))
+      map(annuallyTaxableIncome =>
+        this.res.weeklyMapper(annuallyTaxableIncome)
+      ),
+      shareReplay(1)
     );
   }
 }

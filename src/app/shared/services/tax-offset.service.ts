@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { debounceTime, map, shareReplay } from 'rxjs/operators';
 
 import { FormulaBasedTier } from '@pc/models/formula-based-tier';
 
@@ -15,6 +15,7 @@ export class TaxOffsetService {
       annuallyTaxableIncome$,
       lowAndMiddleIncomeTaxOffsetData$
     ).pipe(
+      debounceTime(0),
       map(([annuallyTaxableIncome, lowAndMiddleIncomeTaxOffsetData]) => {
         let offset = 0;
         if (!lowAndMiddleIncomeTaxOffsetData) {
@@ -31,7 +32,8 @@ export class TaxOffsetService {
           }
         });
         return offset;
-      })
+      }),
+      shareReplay(1)
     );
   }
 
@@ -40,6 +42,7 @@ export class TaxOffsetService {
     lowIncomeTaxOffsetData$: Observable<FormulaBasedTier[]>
   ) {
     return combineLatest(annuallyTaxableIncome$, lowIncomeTaxOffsetData$).pipe(
+      debounceTime(0),
       map(([annuallyTaxableIncome, lowIncomeTaxOffsetData]) => {
         let offset = 0;
         if (!lowIncomeTaxOffsetData) {
@@ -56,7 +59,8 @@ export class TaxOffsetService {
           }
         });
         return offset;
-      })
+      }),
+      shareReplay(1)
     );
   }
 
@@ -70,6 +74,7 @@ export class TaxOffsetService {
       annuallyLowAndMiddleIncomeTaxOffset$,
       annuallyIncomeTax$
     ).pipe(
+      debounceTime(0),
       map(
         ([
           annuallyLowIncomeTaxOffset,
@@ -80,7 +85,8 @@ export class TaxOffsetService {
             annuallyIncomeTax,
             annuallyLowIncomeTaxOffset + annuallyLowAndMiddleIncomeTaxOffset
           )
-      )
+      ),
+      shareReplay(1)
     );
   }
 }

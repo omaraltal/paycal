@@ -40304,13 +40304,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           this.fortnightlyTotalTaxes$ = this.itc.calculateFortnightlyTotalTaxes(this.residencyStatus$, this.fortnightlyIncomeTax$, this.fortnightlyMedicareLevy$);
           this.weeklyTotalTaxes$ = this.itc.calculateWeeklyTotalTaxes(this.residencyStatus$, this.weeklyIncomeTax$, this.weeklyMedicareLevy$); // total payg tax
 
-          this.monthlyTotalPaygTaxes$ = this.itc.calculateMonthlyTotalPaygTaxes(this.residencyStatus$, this.monthlyTaxableIncome$, this.payAsYouGoData$);
-          this.fortnightlyTotalPaygTaxes$ = this.itc.calculateFortnightlyTotalPaygTaxes(this.residencyStatus$, this.fortnightlyTaxableIncome$, this.payAsYouGoData$);
-          this.weeklyTotalPaygTaxes$ = this.itc.calculateWeeklyTotalPaygTaxes(this.residencyStatus$, this.weeklyTaxableIncome$, this.payAsYouGoData$); // payg tax
+          this.monthlyTotalPaygTaxes$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateMonthlyTotalPaygTaxes(this.residencyStatus$, this.monthlyTaxableIncome$, this.payAsYouGoData$), this.monthlyTotalTaxes$);
+          this.fortnightlyTotalPaygTaxes$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateFortnightlyTotalPaygTaxes(this.residencyStatus$, this.fortnightlyTaxableIncome$, this.payAsYouGoData$), this.fortnightlyTotalTaxes$);
+          this.weeklyTotalPaygTaxes$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateWeeklyTotalPaygTaxes(this.residencyStatus$, this.weeklyTaxableIncome$, this.payAsYouGoData$), this.weeklyTotalTaxes$); // payg tax
 
-          this.weeklyIncomePaygTax$ = this.itc.calculateWeeklyIncomePaygTax(this.residencyStatus$, this.weeklyTaxableIncome$, this.weeklyMedicareLevy$);
-          this.monthlyIncomePaygTax$ = this.itc.calculateMonthlyIncomePaygTax(this.residencyStatus$, this.monthlyTaxableIncome$, this.monthlyMedicareLevy$);
-          this.fortnightlyIncomePaygTax$ = this.itc.calculateFortnightlyIncomePaygTax(this.residencyStatus$, this.fortnightlyTaxableIncome$, this.fortnightlyMedicareLevy$); // low income tax offset
+          this.monthlyIncomePaygTax$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateMonthlyIncomePaygTax(this.residencyStatus$, this.monthlyTaxableIncome$, this.monthlyMedicareLevy$), this.monthlyIncomeTax$);
+          this.fortnightlyIncomePaygTax$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateFortnightlyIncomePaygTax(this.residencyStatus$, this.fortnightlyTaxableIncome$, this.fortnightlyMedicareLevy$), this.fortnightlyIncomeTax$);
+          this.weeklyIncomePaygTax$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(this.itc.calculateWeeklyIncomePaygTax(this.residencyStatus$, this.weeklyTaxableIncome$, this.weeklyMedicareLevy$), this.weeklyIncomeTax$); // low income tax offset
 
           this.annuallyLowIncomeTaxOffset$ = this.toc.calculateLowIncomeTaxOffset(this.annuallyTaxableIncome$, this.lowIncomeTaxOffsetData$); // low income and middle tax offset
 
@@ -42009,13 +42009,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
                 taxRatesData = _ref18[1],
                 weeklyTaxableIncome = _ref18[2];
 
-            return _this155.calculateIncomeTax(weeklyTaxableIncome, taxRatesData, _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_4__["PayFrequency"].FORTNIGHTLY);
+            return _this155.calculateIncomeTax(weeklyTaxableIncome, taxRatesData, _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_4__["PayFrequency"].WEEKLY);
           }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateAnnuallyTotalTaxes",
         value: function calculateAnnuallyTotalTaxes(annuallyIncomeTax$, annuallyMedicareLevy$) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyIncomeTax$, annuallyMedicareLevy$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref19) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyIncomeTax$, annuallyMedicareLevy$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref19) {
             var _ref20 = _slicedToArray(_ref19, 2),
                 incomeTax = _ref20[0],
                 medicareLevy = _ref20[1];
@@ -42185,7 +42185,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "calculateAnnuallyIncomeTaxExcludingOffsets",
         value: function calculateAnnuallyIncomeTaxExcludingOffsets(annuallyTotalTaxes$, annuallyTaxOffset$) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTotalTaxes$, annuallyTaxOffset$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref57) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTotalTaxes$, annuallyTaxOffset$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref57) {
             var _ref58 = _slicedToArray(_ref57, 2),
                 annuallyTotalTaxes = _ref58[0],
                 annuallyTaxOffset = _ref58[1];
@@ -42196,35 +42196,38 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "calculateIncomeTax",
         value: function calculateIncomeTax(income, rates, payFrequency) {
+          var annualIncome;
+
           switch (payFrequency) {
             case _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_4__["PayFrequency"].MONTHLY:
-              this.res.annually.fromMonthly(income);
+              annualIncome = this.res.annually.fromMonthly(income);
               break;
 
             case _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_4__["PayFrequency"].FORTNIGHTLY:
-              this.res.annually.fromFortnightly(income);
+              annualIncome = this.res.annually.fromFortnightly(income);
               break;
 
             case _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_4__["PayFrequency"].WEEKLY:
-              this.res.annually.fromWeekly(income);
+              annualIncome = this.res.annually.fromWeekly(income);
               break;
 
             default:
+              annualIncome = income;
               break;
           }
 
-          var tax = rates.reverse().reduce(function (acc, curr) {
+          var tax = rates.concat([]).reverse().reduce(function (acc, curr) {
             var _curr$range = _slicedToArray(curr.range, 2),
                 lower = _curr$range[0],
                 upper = _curr$range[1];
 
             var tierTaxableIncome = 0;
 
-            if (income >= lower) {
+            if (annualIncome >= lower) {
               if (upper) {
-                tierTaxableIncome = Math.min(upper, income) - lower;
+                tierTaxableIncome = Math.min(upper, annualIncome) - lower;
               } else {
-                tierTaxableIncome = income - lower;
+                tierTaxableIncome = annualIncome - lower;
               }
             }
 
@@ -42406,10 +42409,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               }
             });
             return levy;
-          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])({
-            refCount: true,
-            bufferSize: 1
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateMonthlyMedicareLevy",
@@ -42418,7 +42418,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           return annuallyMedicareLevy$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (annuallyMedicareLevy) {
             return _this159.res.monthlyMapper(annuallyMedicareLevy);
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateFortnightlyMedicareLevy",
@@ -42427,7 +42427,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           return annuallyMedicareLevy$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (annuallyMedicareLevy) {
             return _this160.res.fortnightlyMapper(annuallyMedicareLevy);
-          }));
+          }, Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1)));
         }
       }, {
         key: "calculateWeeklyMedicareLevy",
@@ -42436,7 +42436,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           return annuallyMedicareLevy$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (annuallyMedicareLevy) {
             return _this161.res.weeklyMapper(annuallyMedicareLevy);
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }]);
 
@@ -42578,35 +42578,35 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       _createClass(PayService, [{
         key: "calculateAnnuallyPay",
         value: function calculateAnnuallyPay(annuallyTaxableIncome$, annuallyTotalTaxes$) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, annuallyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref62) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, annuallyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref62) {
             var _ref63 = _slicedToArray(_ref62, 2),
                 taxableIncome = _ref63[0],
                 totalTaxes = _ref63[1];
 
             return taxableIncome - totalTaxes;
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateMonthlyPay",
         value: function calculateMonthlyPay(monthlyTaxableIncome$, monthlyTotalTaxes$) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(monthlyTaxableIncome$, monthlyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref64) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(monthlyTaxableIncome$, monthlyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref64) {
             var _ref65 = _slicedToArray(_ref64, 2),
                 taxableIncome = _ref65[0],
                 totalTaxes = _ref65[1];
 
             return taxableIncome - totalTaxes;
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateFortnightlyPay",
         value: function calculateFortnightlyPay(fortnightlyTaxableIncome$, fortnightlyTotalTaxes$) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(fortnightlyTaxableIncome$, fortnightlyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref66) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(fortnightlyTaxableIncome$, fortnightlyTotalTaxes$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref66) {
             var _ref67 = _slicedToArray(_ref66, 2),
                 taxableIncome = _ref67[0],
                 totalTaxes = _ref67[1];
 
             return taxableIncome - totalTaxes;
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateWeeklyPay",
@@ -42617,21 +42617,18 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
                 totalTaxes = _ref69[1];
 
             return taxableIncome - totalTaxes;
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateAnnuallyPayIncludingTaxOffsets",
         value: function calculateAnnuallyPayIncludingTaxOffsets(annuallyTaxableIncome$, annuallyIncomeTaxExcludingOffsets$) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, annuallyIncomeTaxExcludingOffsets$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref70) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, annuallyIncomeTaxExcludingOffsets$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref70) {
             var _ref71 = _slicedToArray(_ref70, 2),
                 annuallyTaxableIncome = _ref71[0],
                 annuallyIncomeTaxExcludingOffsets = _ref71[1];
 
             return annuallyTaxableIncome - annuallyIncomeTaxExcludingOffsets;
-          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])({
-            refCount: true,
-            bufferSize: 1
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }]);
 
@@ -42891,7 +42888,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         value: function calculateAnnuallySuperannuation(superannuationData$, income$, superannuationIncluded$, payFrequency$) {
           var _this162 = this;
 
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(superannuationData$, income$, superannuationIncluded$, payFrequency$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref72) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(superannuationData$, income$, superannuationIncluded$, payFrequency$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref72) {
             var _ref73 = _slicedToArray(_ref72, 4),
                 superannuationData = _ref73[0],
                 income = _ref73[1],
@@ -42900,10 +42897,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
             var superannuation = superannuationIncluded ? income - income / (1 + superannuationData.rate) : income * superannuationData.rate;
             return _this162.res.annuallyMapper(superannuation, payFrequency);
-          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])({
-            refCount: true,
-            bufferSize: 1
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateMonthlySuperannuation",
@@ -42912,7 +42906,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           return annuallySuperannuation$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (superannuation) {
             return _this163.res.monthlyMapper(superannuation);
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateFortnightlySuperannuation",
@@ -42921,7 +42915,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           return annuallySuperannuation$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (superannuation) {
             return _this164.res.fortnightlyMapper(superannuation);
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateWeeklySuperannuation",
@@ -42930,7 +42924,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           return annuallySuperannuation$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (superannuation) {
             return _this165.res.weeklyMapper(superannuation);
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }]);
 
@@ -43097,7 +43091,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "getLowIncomeTaxOffsetData",
         value: function getLowIncomeTaxOffsetData(applicableTaxData$, residencyStatus$) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(applicableTaxData$, residencyStatus$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref76) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(applicableTaxData$, residencyStatus$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref76) {
             var _ref77 = _slicedToArray(_ref76, 2),
                 data = _ref77[0],
                 residencyStatus = _ref77[1];
@@ -43108,7 +43102,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "getLowAndMiddleIncomeTaxOffsetData",
         value: function getLowAndMiddleIncomeTaxOffsetData(applicableTaxData$, residencyStatus$) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(applicableTaxData$, residencyStatus$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref78) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(applicableTaxData$, residencyStatus$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref78) {
             var _ref79 = _slicedToArray(_ref78, 2),
                 data = _ref79[0],
                 residencyStatus = _ref79[1];
@@ -43188,7 +43182,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       _createClass(TaxOffsetService, [{
         key: "calculateLowAndMiddleIncomeTaxOffset",
         value: function calculateLowAndMiddleIncomeTaxOffset(annuallyTaxableIncome$, lowAndMiddleIncomeTaxOffsetData$) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, lowAndMiddleIncomeTaxOffsetData$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref80) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, lowAndMiddleIncomeTaxOffsetData$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref80) {
             var _ref81 = _slicedToArray(_ref80, 2),
                 annuallyTaxableIncome = _ref81[0],
                 lowAndMiddleIncomeTaxOffsetData = _ref81[1];
@@ -43210,12 +43204,12 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               }
             });
             return offset;
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateLowIncomeTaxOffset",
         value: function calculateLowIncomeTaxOffset(annuallyTaxableIncome$, lowIncomeTaxOffsetData$) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, lowIncomeTaxOffsetData$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref82) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyTaxableIncome$, lowIncomeTaxOffsetData$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref82) {
             var _ref83 = _slicedToArray(_ref82, 2),
                 annuallyTaxableIncome = _ref83[0],
                 lowIncomeTaxOffsetData = _ref83[1];
@@ -43237,19 +43231,19 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               }
             });
             return offset;
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateTotalIncomeTaxOffset",
         value: function calculateTotalIncomeTaxOffset(annuallyLowIncomeTaxOffset$, annuallyLowAndMiddleIncomeTaxOffset$, annuallyIncomeTax$) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyLowIncomeTaxOffset$, annuallyLowAndMiddleIncomeTaxOffset$, annuallyIncomeTax$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref84) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(annuallyLowIncomeTaxOffset$, annuallyLowAndMiddleIncomeTaxOffset$, annuallyIncomeTax$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref84) {
             var _ref85 = _slicedToArray(_ref84, 3),
                 annuallyLowIncomeTaxOffset = _ref85[0],
                 annuallyLowAndMiddleIncomeTaxOffset = _ref85[1],
                 annuallyIncomeTax = _ref85[2];
 
             return Math.min(annuallyIncomeTax, annuallyLowIncomeTaxOffset + annuallyLowAndMiddleIncomeTaxOffset);
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }]);
 
@@ -43324,7 +43318,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         value: function calculateAnnuallyTaxableIncome(superannuationData$, income$, superannuationIncluded$, payFrequency$) {
           var _this166 = this;
 
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(superannuationData$, income$, superannuationIncluded$, payFrequency$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref86) {
+          return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(superannuationData$, income$, superannuationIncluded$, payFrequency$).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_ref86) {
             var _ref87 = _slicedToArray(_ref86, 4),
                 superannuation = _ref87[0],
                 income = _ref87[1],
@@ -43342,7 +43336,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           return annuallyTaxableIncome$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (annuallyTaxableIncome) {
             return _this167.res.monthlyMapper(annuallyTaxableIncome);
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateFortnightlyTaxableIncome",
@@ -43351,7 +43345,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           return annuallyTaxableIncome$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (annuallyTaxableIncome) {
             return _this168.res.fortnightlyMapper(annuallyTaxableIncome);
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }, {
         key: "calculateWeeklyTaxableIncome",
@@ -43360,7 +43354,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           return annuallyTaxableIncome$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (annuallyTaxableIncome) {
             return _this169.res.weeklyMapper(annuallyTaxableIncome);
-          }));
+          }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["shareReplay"])(1));
         }
       }]);
 

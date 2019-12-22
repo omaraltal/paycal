@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, merge, Observable } from 'rxjs';
 
 import { ApplicableIndividualTaxData } from '@pc/models/applicable-individual-tax-data';
 import { FormulaBasedTier } from '@pc/models/formula-based-tier';
@@ -15,7 +15,7 @@ import { SuperannuationService } from '@pc/shared/services/superannuation.servic
 import { TaxDataService } from '@pc/shared/services/tax-data.service';
 import { TaxOffsetService } from '@pc/shared/services/tax-offset.service';
 import { TaxableIncomeService } from '@pc/shared/services/taxable-income.service';
-import { mergeMap, take } from 'rxjs/operators';
+import { mergeMap, take, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-income-tax-calculator',
@@ -284,41 +284,60 @@ export class IncomeTaxCalculatorComponent implements OnInit {
     );
 
     // total payg tax
-    this.monthlyTotalPaygTaxes$ = this.itc.calculateMonthlyTotalPaygTaxes(
-      this.residencyStatus$,
-      this.monthlyTaxableIncome$,
-      this.payAsYouGoData$
+    this.monthlyTotalPaygTaxes$ = merge(
+      this.itc.calculateMonthlyTotalPaygTaxes(
+        this.residencyStatus$,
+        this.monthlyTaxableIncome$,
+        this.payAsYouGoData$
+      ),
+      this.monthlyTotalTaxes$
     );
 
-    this.fortnightlyTotalPaygTaxes$ = this.itc.calculateFortnightlyTotalPaygTaxes(
-      this.residencyStatus$,
-      this.fortnightlyTaxableIncome$,
-      this.payAsYouGoData$
+    this.fortnightlyTotalPaygTaxes$ = merge(
+      this.itc.calculateFortnightlyTotalPaygTaxes(
+        this.residencyStatus$,
+        this.fortnightlyTaxableIncome$,
+        this.payAsYouGoData$
+      ),
+      this.fortnightlyTotalTaxes$
     );
 
-    this.weeklyTotalPaygTaxes$ = this.itc.calculateWeeklyTotalPaygTaxes(
-      this.residencyStatus$,
-      this.weeklyTaxableIncome$,
-      this.payAsYouGoData$
+    this.weeklyTotalPaygTaxes$ = merge(
+      this.itc.calculateWeeklyTotalPaygTaxes(
+        this.residencyStatus$,
+        this.weeklyTaxableIncome$,
+        this.payAsYouGoData$
+      ),
+      this.weeklyTotalTaxes$
     );
 
     // payg tax
-    this.weeklyIncomePaygTax$ = this.itc.calculateWeeklyIncomePaygTax(
-      this.residencyStatus$,
-      this.weeklyTaxableIncome$,
-      this.weeklyMedicareLevy$
+
+    this.monthlyIncomePaygTax$ = merge(
+      this.itc.calculateMonthlyIncomePaygTax(
+        this.residencyStatus$,
+        this.monthlyTaxableIncome$,
+        this.monthlyMedicareLevy$
+      ),
+      this.monthlyIncomeTax$
     );
 
-    this.monthlyIncomePaygTax$ = this.itc.calculateMonthlyIncomePaygTax(
-      this.residencyStatus$,
-      this.monthlyTaxableIncome$,
-      this.monthlyMedicareLevy$
+    this.fortnightlyIncomePaygTax$ = merge(
+      this.itc.calculateFortnightlyIncomePaygTax(
+        this.residencyStatus$,
+        this.fortnightlyTaxableIncome$,
+        this.fortnightlyMedicareLevy$
+      ),
+      this.fortnightlyIncomeTax$
     );
 
-    this.fortnightlyIncomePaygTax$ = this.itc.calculateFortnightlyIncomePaygTax(
-      this.residencyStatus$,
-      this.fortnightlyTaxableIncome$,
-      this.fortnightlyMedicareLevy$
+    this.weeklyIncomePaygTax$ = merge(
+      this.itc.calculateWeeklyIncomePaygTax(
+        this.residencyStatus$,
+        this.weeklyTaxableIncome$,
+        this.weeklyMedicareLevy$
+      ),
+      this.weeklyIncomeTax$
     );
 
     // low income tax offset

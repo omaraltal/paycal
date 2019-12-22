@@ -100,7 +100,7 @@ export class IncomeTaxService {
         return this.calculateIncomeTax(
           weeklyTaxableIncome,
           taxRatesData,
-          PayFrequency.FORTNIGHTLY
+          PayFrequency.WEEKLY
         );
       }),
       shareReplay(1)
@@ -112,6 +112,7 @@ export class IncomeTaxService {
     annuallyMedicareLevy$: Observable<number>
   ) {
     return combineLatest(annuallyIncomeTax$, annuallyMedicareLevy$).pipe(
+      debounceTime(0),
       map(([incomeTax, medicareLevy]) => incomeTax + medicareLevy),
       shareReplay(1)
     );
@@ -334,6 +335,7 @@ export class IncomeTaxService {
     annuallyTaxOffset$: Observable<number>
   ) {
     return combineLatest(annuallyTotalTaxes$, annuallyTaxOffset$).pipe(
+      debounceTime(0),
       map(
         ([annuallyTotalTaxes, annuallyTaxOffset]) =>
           annuallyTotalTaxes - annuallyTaxOffset
@@ -343,31 +345,36 @@ export class IncomeTaxService {
   }
 
   private calculateIncomeTax(income, rates, payFrequency): number {
+    let annualIncome: number;
     switch (payFrequency) {
       case PayFrequency.MONTHLY:
-        this.res.annually.fromMonthly(income);
+        annualIncome = this.res.annually.fromMonthly(income);
         break;
       case PayFrequency.FORTNIGHTLY:
-        this.res.annually.fromFortnightly(income);
+        annualIncome = this.res.annually.fromFortnightly(income);
         break;
       case PayFrequency.WEEKLY:
-        this.res.annually.fromWeekly(income);
+        annualIncome = this.res.annually.fromWeekly(income);
         break;
       default:
+        annualIncome = income;
         break;
     }
-    const tax = rates.reverse().reduce((acc, curr) => {
-      const [lower, upper] = curr.range;
-      let tierTaxableIncome = 0;
-      if (income >= lower) {
-        if (upper) {
-          tierTaxableIncome = Math.min(upper, income) - lower;
-        } else {
-          tierTaxableIncome = income - lower;
+    const tax = rates
+      .concat([])
+      .reverse()
+      .reduce((acc, curr) => {
+        const [lower, upper] = curr.range;
+        let tierTaxableIncome = 0;
+        if (annualIncome >= lower) {
+          if (upper) {
+            tierTaxableIncome = Math.min(upper, annualIncome) - lower;
+          } else {
+            tierTaxableIncome = annualIncome - lower;
+          }
         }
-      }
-      return acc + tierTaxableIncome * curr.rate;
-    }, 0);
+        return acc + tierTaxableIncome * curr.rate;
+      }, 0);
 
     switch (payFrequency) {
       case PayFrequency.MONTHLY:

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { combineLatest, Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { debounceTime, map, shareReplay } from 'rxjs/operators';
 
 @Injectable()
 export class PayService {
@@ -10,7 +10,9 @@ export class PayService {
     annuallyTotalTaxes$: Observable<number>
   ): Observable<number> {
     return combineLatest(annuallyTaxableIncome$, annuallyTotalTaxes$).pipe(
-      map(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes)
+      debounceTime(0),
+      map(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes),
+      shareReplay(1)
     );
   }
 
@@ -19,7 +21,9 @@ export class PayService {
     monthlyTotalTaxes$: Observable<number>
   ): Observable<number> {
     return combineLatest(monthlyTaxableIncome$, monthlyTotalTaxes$).pipe(
-      map(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes)
+      debounceTime(0),
+      map(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes),
+      shareReplay(1)
     );
   }
 
@@ -30,7 +34,11 @@ export class PayService {
     return combineLatest(
       fortnightlyTaxableIncome$,
       fortnightlyTotalTaxes$
-    ).pipe(map(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes));
+    ).pipe(
+      debounceTime(0),
+      map(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes),
+      shareReplay(1)
+    );
   }
 
   calculateWeeklyPay(
@@ -38,7 +46,8 @@ export class PayService {
     weeklyTotalTaxes$: Observable<number>
   ): Observable<number> {
     return combineLatest(weeklyTaxableIncome$, weeklyTotalTaxes$).pipe(
-      map(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes)
+      map(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes),
+      shareReplay(1)
     );
   }
   calculateAnnuallyPayIncludingTaxOffsets(
@@ -49,11 +58,12 @@ export class PayService {
       annuallyTaxableIncome$,
       annuallyIncomeTaxExcludingOffsets$
     ).pipe(
+      debounceTime(0),
       map(
         ([annuallyTaxableIncome, annuallyIncomeTaxExcludingOffsets]) =>
           annuallyTaxableIncome - annuallyIncomeTaxExcludingOffsets
       ),
-      shareReplay({ refCount: true, bufferSize: 1 })
+      shareReplay(1)
     );
   }
 }
