@@ -11,6 +11,7 @@ export class ToggleComponent {
   @Input()
   checked = false;
   @Input() label: string;
+  @Input() disabled: boolean;
   @Output() checkedChange = new EventEmitter<boolean>();
   id = `shared-toggle-${++id}`;
 

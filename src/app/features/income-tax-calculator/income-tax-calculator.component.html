@@ -18,40 +18,13 @@
     <div style="display: flex;">
       <shared-radio-group [(value)]="residencyStatus"></shared-radio-group>
     </div>
-    <!-- <mat-form-field> -->
-    <!-- <mat-label>Frequency</mat-label> -->
-    <!-- <mat-select [(ngModel)]="payFrequency">
-        <mat-option
-          *ngFor="let frequency of payFrequencyData | keyvalue"
-          [value]="frequency.value"
-          >{{ frequency.value }}</mat-option
-        >
-      </mat-select> -->
-    <!-- </mat-form-field> -->
-
-    <!-- <mat-form-field>
-      <mat-label>Income year</mat-label>
-      <mat-select [(ngModel)]="incomeYear">
-        <mat-option *ngFor="let year of incomeYears" [value]="year">{{
-          year
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
     <div>
-      <mat-label>Residency status</mat-label>
-      <mat-radio-group
-        aria-label="Select an option"
-        class="radios-container"
-        [(ngModel)]="residencyStatus"
-      >
-        <mat-radio-button
-          *ngFor="let status of residencyStatusData | keyvalue"
-          [value]="status.value"
-        >
-          {{ status.value }}
-        </mat-radio-button>
-      </mat-radio-group>
-    </div> -->
+      <shared-toggle
+        [(checked)]="help"
+        label="HELP & TSL repayment"
+        [disabled]="helpDisabled"
+      ></shared-toggle>
+    </div>
   </div>
 </div>
 <div class="result">
@@ -64,6 +37,7 @@
     [medicareLevy]="annuallyMedicareLevy$ | async"
     [incomeTax]="annuallyIncomeTax$ | async"
     [taxOffset]="annuallyTaxOffset$ | async"
+    [helpTsl]="annuallyHELPnTSL$ | async"
   ></pc-income-tax-panel>
   <pc-income-tax-panel
     title="Monthly"
@@ -73,6 +47,7 @@
     [totalTaxes]="monthlyTotalPaygTaxes$ | async"
     [medicareLevy]="monthlyMedicareLevy$ | async"
     [incomeTax]="monthlyIncomePaygTax$ | async"
+    [helpTsl]="monthlyHELPnTSL$ | async"
   ></pc-income-tax-panel>
   <pc-income-tax-panel
     title="Fortnightly"
@@ -82,6 +57,7 @@
     [totalTaxes]="fortnightlyTotalPaygTaxes$ | async"
     [medicareLevy]="fortnightlyMedicareLevy$ | async"
     [incomeTax]="fortnightlyIncomePaygTax$ | async"
+    [helpTsl]="fortnightlyHELPnTSL$ | async"
   ></pc-income-tax-panel>
   <pc-income-tax-panel
     title="Weekly"
@@ -91,5 +67,6 @@
     [totalTaxes]="weeklyTotalPaygTaxes$ | async"
     [medicareLevy]="weeklyMedicareLevy$ | async"
     [incomeTax]="weeklyIncomePaygTax$ | async"
+    [helpTsl]="weeklyHELPnTSL$ | async"
   ></pc-income-tax-panel>
 </div>

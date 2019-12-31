@@ -13,5 +13,6 @@ export class IncomeTaxPanelComponent {
   @Input() totalTaxes: string;
   @Input() incomeTax: string;
   @Input() medicareLevy: string;
+  @Input() helpTsl: string;
   @Input() taxOffset: string;
 }

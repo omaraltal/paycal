@@ -1,5 +1,5 @@
-<div class="toggle">
-  <label [id]="id" class="pb-1" (click)="toggle()">{{ label }}</label>
+<div class="toggle" (click)="toggle()" [ngClass]="{ disabled: disabled }">
+  <label [id]="id" class="pb-1">{{ label }}</label>
   <span
     role="checkbox"
     attr.aria-checked="{{ checked }}"
@@ -7,7 +7,6 @@
     [ngClass]="{ checked: checked }"
     tabindex="0"
     (keydown)="onKeydown($event)"
-    (click)="toggle()"
     attr.aria-labelledby="{{ id }}"
   >
     <span class="toggle-btn"></span>

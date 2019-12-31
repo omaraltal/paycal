@@ -47,7 +47,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<header></header>\n<!-- <div style=\"display: flex; justify-content: center;\">\n  <div style=\"background: red; flex: 0 0 100px\">\n    <div>\n      <div></div>\n    </div>\n  </div>\n  <div style=\"background: blue;flex: 0 0 1140px;\">b</div>\n  <div style=\"background: green;flex: 0 0 100px;\">c</div>\n</div> -->\n<div class=\"container\">\n  <router-outlet></router-outlet>\n</div>\n";
+    __webpack_exports__["default"] = "<header>\n  aussiecalculator\n</header>\n<!-- <div style=\"display: flex; justify-content: center;\">\n  <div style=\"background: red; flex: 0 0 100px\">\n    <div>\n      <div></div>\n    </div>\n  </div>\n  <div style=\"background: blue;flex: 0 0 1140px;\">b</div>\n  <div style=\"background: green;flex: 0 0 100px;\">c</div>\n</div> -->\n<div class=\"container\">\n  <router-outlet></router-outlet>\n</div>\n";
     /***/
   },
 
@@ -690,7 +690,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "header {\n  height: 40px;\n  margin-bottom: 100px;\n  background: #ff9f9f;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9vbWFyYWx0YWwvU2l0ZXMvcGF5Y2FsL3NyYy9hcHAvYXBwLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9hcHAuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxZQUFBO0VBQ0Esb0JBQUE7RUFDQSxtQkFBQTtBQ0NGIiwiZmlsZSI6InNyYy9hcHAvYXBwLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiaGVhZGVyIHtcbiAgaGVpZ2h0OiA0MHB4O1xuICBtYXJnaW4tYm90dG9tOiAxMDBweDtcbiAgYmFja2dyb3VuZDogI2ZmOWY5Zjtcbn1cbiIsImhlYWRlciB7XG4gIGhlaWdodDogNDBweDtcbiAgbWFyZ2luLWJvdHRvbTogMTAwcHg7XG4gIGJhY2tncm91bmQ6ICNmZjlmOWY7XG59Il19 */";
+    __webpack_exports__["default"] = "header {\n  font-family: \"Libre Baskerville\", serif;\n  font-weight: 400;\n  height: 40px;\n  margin-bottom: 100px;\n  background: #ff9f9f;\n}\nheader span {\n  font-weight: 700;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9vbWFyYWx0YWwvU2l0ZXMvcGF5Y2FsL3NyYy9hcHAvYXBwLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9hcHAuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSx1Q0FBQTtFQUNBLGdCQUFBO0VBQ0EsWUFBQTtFQUNBLG9CQUFBO0VBQ0EsbUJBQUE7QUNDRjtBREFFO0VBQ0UsZ0JBQUE7QUNFSiIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbImhlYWRlciB7XG4gIGZvbnQtZmFtaWx5OiAnTGlicmUgQmFza2VydmlsbGUnLCBzZXJpZjtcbiAgZm9udC13ZWlnaHQ6IDQwMDtcbiAgaGVpZ2h0OiA0MHB4O1xuICBtYXJnaW4tYm90dG9tOiAxMDBweDtcbiAgYmFja2dyb3VuZDogI2ZmOWY5ZjtcbiAgc3BhbiB7XG4gICAgZm9udC13ZWlnaHQ6IDcwMDtcbiAgfVxufVxuIiwiaGVhZGVyIHtcbiAgZm9udC1mYW1pbHk6IFwiTGlicmUgQmFza2VydmlsbGVcIiwgc2VyaWY7XG4gIGZvbnQtd2VpZ2h0OiA0MDA7XG4gIGhlaWdodDogNDBweDtcbiAgbWFyZ2luLWJvdHRvbTogMTAwcHg7XG4gIGJhY2tncm91bmQ6ICNmZjlmOWY7XG59XG5oZWFkZXIgc3BhbiB7XG4gIGZvbnQtd2VpZ2h0OiA3MDA7XG59Il19 */";
     /***/
   },
 

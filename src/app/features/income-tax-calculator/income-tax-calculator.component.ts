@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { BehaviorSubject, merge, Observable } from 'rxjs';
+import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 
 import { ApplicableIndividualTaxData } from '@pc/models/applicable-individual-tax-data';
 import { FormulaBasedTier } from '@pc/models/formula-based-tier';
@@ -15,16 +15,31 @@ import { SuperannuationService } from '@pc/shared/services/superannuation.servic
 import { TaxDataService } from '@pc/shared/services/tax-data.service';
 import { TaxOffsetService } from '@pc/shared/services/tax-offset.service';
 import { TaxableIncomeService } from '@pc/shared/services/taxable-income.service';
-import { mergeMap, take, tap } from 'rxjs/operators';
+import { HelpTslCalculatorService } from '@pc/shared/services/help-tsl-calculator.service';
+import { Bracket } from '@pc/models/bracket';
+import { takeUntil, filter, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-income-tax-calculator',
   templateUrl: './income-tax-calculator.component.html',
   styleUrls: ['./income-tax-calculator.component.scss'],
 })
-export class IncomeTaxCalculatorComponent implements OnInit {
+export class IncomeTaxCalculatorComponent implements OnInit, OnDestroy {
+  unsubscriber$ = new Subject();
   residencyStatusData = ResidencyStatus;
   payFrequencyData = PayFrequency;
+  helpDisabled = false;
+
+  // help
+  innerHelp = false;
+  set help(value: boolean) {
+    this.innerHelp = value;
+    this.helpIncluded$.next(value);
+  }
+  get help(): boolean {
+    return this.innerHelp;
+  }
+  helpIncluded$ = new BehaviorSubject(this.help);
 
   // residency status
   innerResidencyStatus: ResidencyStatus = ResidencyStatus.RESIDENT;
@@ -91,6 +106,10 @@ export class IncomeTaxCalculatorComponent implements OnInit {
   medicareLevyData$: Observable<FormulaBasedTier[]>;
   lowIncomeTaxOffsetData$: Observable<FormulaBasedTier[]>;
   lowAndMiddleIncomeTaxOffsetData$: Observable<FormulaBasedTier[]>;
+  helpData$: Observable<Bracket[]>;
+  helpNoTaxFreeData$: Observable<Bracket[]>;
+  sfssData$: Observable<Bracket[]>;
+  sfssNoTaxFreeData$: Observable<Bracket[]>;
   incomeYears: number[];
 
   // pay
@@ -122,6 +141,12 @@ export class IncomeTaxCalculatorComponent implements OnInit {
   monthlyIncomeTax$: Observable<number>;
   fortnightlyIncomeTax$: Observable<number>;
   weeklyIncomeTax$: Observable<number>;
+
+  // help and TSL
+  annuallyHELPnTSL$: Observable<number>;
+  monthlyHELPnTSL$: Observable<number>;
+  fortnightlyHELPnTSL$: Observable<number>;
+  weeklyHELPnTSL$: Observable<number>;
 
   // total taxes
   annuallyTotalTaxes$: Observable<number>;
@@ -164,7 +189,8 @@ export class IncomeTaxCalculatorComponent implements OnInit {
     private tic: TaxableIncomeService,
     private mlc: MedicareLevyService,
     private payc: PayService,
-    private td: TaxDataService
+    private td: TaxDataService,
+    private htcs: HelpTslCalculatorService
   ) {}
 
   ngOnInit() {
@@ -186,6 +212,10 @@ export class IncomeTaxCalculatorComponent implements OnInit {
       this.residencyStatus$
     );
     this.lowAndMiddleIncomeTaxOffsetData$ = this.td.getLowAndMiddleIncomeTaxOffsetData(
+      this.applicableTaxData$,
+      this.residencyStatus$
+    );
+    this.helpData$ = this.td.getHelpData(
       this.applicableTaxData$,
       this.residencyStatus$
     );
@@ -262,10 +292,33 @@ export class IncomeTaxCalculatorComponent implements OnInit {
       this.weeklyTaxableIncome$
     );
 
+    // help and TSL
+    this.annuallyHELPnTSL$ = this.htcs.calculateAnnuallyHELPnTSL(
+      this.annuallyTaxableIncome$,
+      this.helpData$,
+      this.helpIncluded$
+    );
+    this.monthlyHELPnTSL$ = this.htcs.calculateMonthlyHELPnTSL(
+      this.monthlyTaxableIncome$,
+      this.helpData$,
+      this.helpIncluded$
+    );
+    this.fortnightlyHELPnTSL$ = this.htcs.calculateFortnightlyHELPnTSL(
+      this.fortnightlyTaxableIncome$,
+      this.helpData$,
+      this.helpIncluded$
+    );
+    this.weeklyHELPnTSL$ = this.htcs.calculateWeeklyHELPnTSL(
+      this.weeklyTaxableIncome$,
+      this.helpData$,
+      this.helpIncluded$
+    );
+
     // total taxes
     this.annuallyTotalTaxes$ = this.itc.calculateAnnuallyTotalTaxes(
       this.annuallyIncomeTax$,
-      this.annuallyMedicareLevy$
+      this.annuallyMedicareLevy$,
+      this.annuallyHELPnTSL$
     );
     this.monthlyTotalTaxes$ = this.itc.calculateMonthlyTotalTaxes(
       this.residencyStatus$,
@@ -288,7 +341,8 @@ export class IncomeTaxCalculatorComponent implements OnInit {
       this.itc.calculateMonthlyTotalPaygTaxes(
         this.residencyStatus$,
         this.monthlyTaxableIncome$,
-        this.payAsYouGoData$
+        this.payAsYouGoData$,
+        this.monthlyHELPnTSL$
       ),
       this.monthlyTotalTaxes$
     );
@@ -297,7 +351,8 @@ export class IncomeTaxCalculatorComponent implements OnInit {
       this.itc.calculateFortnightlyTotalPaygTaxes(
         this.residencyStatus$,
         this.fortnightlyTaxableIncome$,
-        this.payAsYouGoData$
+        this.payAsYouGoData$,
+        this.fortnightlyHELPnTSL$
       ),
       this.fortnightlyTotalTaxes$
     );
@@ -306,7 +361,8 @@ export class IncomeTaxCalculatorComponent implements OnInit {
       this.itc.calculateWeeklyTotalPaygTaxes(
         this.residencyStatus$,
         this.weeklyTaxableIncome$,
-        this.payAsYouGoData$
+        this.payAsYouGoData$,
+        this.weeklyHELPnTSL$
       ),
       this.weeklyTotalTaxes$
     );
@@ -388,6 +444,25 @@ export class IncomeTaxCalculatorComponent implements OnInit {
       this.annuallyTaxableIncome$,
       this.annuallyIncomeTaxExcludingOffsets$
     );
+
+    this.residencyStatus$
+      .pipe(
+        tap(residencyStatus => {
+          if (residencyStatus === ResidencyStatus.WORKING_HOLIDAY) {
+            this.help = false;
+            this.helpDisabled = true;
+          } else {
+            this.helpDisabled = false;
+          }
+        }),
+        takeUntil(this.unsubscriber$)
+      )
+      .subscribe();
+  }
+
+  ngOnDestroy() {
+    this.unsubscriber$.next();
+    this.unsubscriber$.complete();
   }
 
   updateIncludeSuperannuation(isIncluded: boolean) {

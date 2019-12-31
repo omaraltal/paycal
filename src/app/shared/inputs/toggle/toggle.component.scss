@@ -11,7 +11,7 @@ $toggle-checked-focus-background: lighten(
   $toggle-checked-background,
   5%
 ) !default;
-$toggle-font-family: $font-family-lato;
+$toggle-disabled-background: lighten($toggle-checked-background, 30%) !default;
 $toggle-transition-duration: 0.2s !default;
 $toggle-button-size: 1rem;
 
@@ -20,12 +20,16 @@ $enable-toggle-transition: true !default;
 
 .toggle {
   margin-top: 20px;
-  display: flex;
+  display: inline-flex;
   flex-direction: row-reverse;
   justify-content: flex-end;
   align-items: center;
   font-size: 1rem;
   font-weight: 700;
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+  }
 }
 .toggle-wrapper {
   display: inline-block;
@@ -71,6 +75,5 @@ $enable-toggle-transition: true !default;
 }
 label {
   margin-left: 10px;
-  font-family: $toggle-font-family;
-  color: $gray-900;
+  font-weight: 700;
 }

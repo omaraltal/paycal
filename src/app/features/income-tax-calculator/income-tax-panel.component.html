@@ -48,6 +48,14 @@
       {{ medicareLevy | currency }}
     </div>
   </div>
+  <div class="information">
+    <div class="title">
+      Help and Tsl
+    </div>
+    <div class="value">
+      {{ helpTsl | currency }}
+    </div>
+  </div>
   <div class="information" *ngIf="taxOffset !== undefined">
     <div class="title">
       Tax Offsets

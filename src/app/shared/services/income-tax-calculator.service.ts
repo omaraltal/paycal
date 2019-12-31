@@ -109,11 +109,19 @@ export class IncomeTaxService {
 
   calculateAnnuallyTotalTaxes(
     annuallyIncomeTax$: Observable<number>,
-    annuallyMedicareLevy$: Observable<number>
+    annuallyMedicareLevy$: Observable<number>,
+    annuallyHELPnTSL$: Observable<number>
   ) {
-    return combineLatest(annuallyIncomeTax$, annuallyMedicareLevy$).pipe(
+    return combineLatest(
+      annuallyIncomeTax$,
+      annuallyMedicareLevy$,
+      annuallyHELPnTSL$
+    ).pipe(
       debounceTime(0),
-      map(([incomeTax, medicareLevy]) => incomeTax + medicareLevy),
+      map(
+        ([incomeTax, medicareLevy, hELPnTSL]) =>
+          incomeTax + medicareLevy + hELPnTSL
+      ),
       shareReplay(1)
     );
   }
@@ -255,25 +263,28 @@ export class IncomeTaxService {
   calculateMonthlyTotalPaygTaxes(
     residencyStatus$: Observable<ResidencyStatus>,
     monthlyTaxableIncome$: Observable<number>,
-    payAsYouGoData$: Observable<PayAsYouGo[]>
+    payAsYouGoData$: Observable<PayAsYouGo[]>,
+    monthlyHELPnTSL$: Observable<number>
   ): Observable<number> {
     return combineLatest(
       residencyStatus$,
       monthlyTaxableIncome$,
-      payAsYouGoData$
+      payAsYouGoData$,
+      monthlyHELPnTSL$
     ).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
           residencyStatus !== ResidencyStatus.WORKING_HOLIDAY
       ),
-      map(([residencyStatus, monthlyTaxableIncome, payAsYouGoData]) => {
-        return this.calculatePayAsYouGo(
-          monthlyTaxableIncome,
-          payAsYouGoData,
-          PayFrequency.MONTHLY
-        );
-      }),
+      map(
+        ([residencyStatus, monthlyTaxableIncome, payAsYouGoData, hELPnTSL]) =>
+          this.calculatePayAsYouGo(
+            monthlyTaxableIncome,
+            payAsYouGoData,
+            PayFrequency.MONTHLY
+          ) + hELPnTSL
+      ),
       shareReplay(1)
     );
   }
@@ -281,24 +292,32 @@ export class IncomeTaxService {
   calculateFortnightlyTotalPaygTaxes(
     residencyStatus$: Observable<ResidencyStatus>,
     fortnightlyTaxableIncome$: Observable<number>,
-    payAsYouGoData$: Observable<PayAsYouGo[]>
+    payAsYouGoData$: Observable<PayAsYouGo[]>,
+    fortnightlyHELPnTSL$: Observable<number>
   ): Observable<number> {
     return combineLatest(
       residencyStatus$,
       fortnightlyTaxableIncome$,
-      payAsYouGoData$
+      payAsYouGoData$,
+      fortnightlyHELPnTSL$
     ).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
           residencyStatus !== ResidencyStatus.WORKING_HOLIDAY
       ),
-      map(([residencyStatus, fortnightlyTaxableIncome, payAsYouGoData]) =>
-        this.calculatePayAsYouGo(
+      map(
+        ([
+          residencyStatus,
           fortnightlyTaxableIncome,
           payAsYouGoData,
-          PayFrequency.FORTNIGHTLY
-        )
+          hELPnTSL,
+        ]) =>
+          this.calculatePayAsYouGo(
+            fortnightlyTaxableIncome,
+            payAsYouGoData,
+            PayFrequency.FORTNIGHTLY
+          ) + hELPnTSL
       ),
       shareReplay(1)
     );
@@ -307,24 +326,27 @@ export class IncomeTaxService {
   calculateWeeklyTotalPaygTaxes(
     residencyStatus$: Observable<ResidencyStatus>,
     weeklyTaxableIncome$: Observable<number>,
-    payAsYouGoData$: Observable<PayAsYouGo[]>
+    payAsYouGoData$: Observable<PayAsYouGo[]>,
+    monthlyHELPnTSL$: Observable<number>
   ): Observable<number> {
     return combineLatest(
       residencyStatus$,
       weeklyTaxableIncome$,
-      payAsYouGoData$
+      payAsYouGoData$,
+      monthlyHELPnTSL$
     ).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
           residencyStatus !== ResidencyStatus.WORKING_HOLIDAY
       ),
-      map(([residencyStatus, weeklyTaxableIncome, payAsYouGoData]) =>
-        this.calculatePayAsYouGo(
-          weeklyTaxableIncome,
-          payAsYouGoData,
-          PayFrequency.WEEKLY
-        )
+      map(
+        ([residencyStatus, weeklyTaxableIncome, payAsYouGoData, hELPnTSL]) =>
+          this.calculatePayAsYouGo(
+            weeklyTaxableIncome,
+            payAsYouGoData,
+            PayFrequency.WEEKLY
+          ) + hELPnTSL
       ),
       shareReplay(1)
     );

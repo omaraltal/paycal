@@ -11,6 +11,7 @@ import { LabelComponent } from './inputs/label/label.component';
 import { RadioComponent } from './inputs/radio/radio.component';
 import { ToggleComponent } from './inputs/toggle/toggle.component';
 import { CustomCurrencyPipe } from './pipes/custom-currency.pipe';
+import { HelpTslCalculatorService } from './services/help-tsl-calculator.service';
 import { IncomeTaxService } from './services/income-tax-calculator.service';
 import { MedicareLevyService } from './services/medicare-levy.service';
 import { MoveFocusService } from './services/move-focus.service';
@@ -55,6 +56,7 @@ import { TaxableIncomeService } from './services/taxable-income.service';
     PayService,
     TaxDataService,
     MoveFocusService,
+    HelpTslCalculatorService,
   ],
 })
 export class SharedModule {}

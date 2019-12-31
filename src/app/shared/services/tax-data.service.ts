@@ -5,6 +5,7 @@ import { debounceTime, map, shareReplay } from 'rxjs/operators';
 
 import { INCOME_TAX_DATA } from '@pc/data/income-tax-data';
 import { ApplicableIndividualTaxData } from '@pc/models/applicable-individual-tax-data';
+import { Bracket } from '@pc/models/bracket';
 import { FormulaBasedTier } from '@pc/models/formula-based-tier';
 import { PayAsYouGo } from '@pc/models/pay-as-you-go';
 import { ResidencyStatus } from '@pc/models/residency-status';
@@ -140,5 +141,34 @@ export class TaxDataService {
     return Object.keys(INCOME_TAX_DATA)
       .map(i => Number(i))
       .sort((a, b) => b - a);
+  }
+
+  getHelpData(
+    applicableTaxData$: Observable<ApplicableIndividualTaxData>,
+    residencyStatus$: Observable<ResidencyStatus>
+  ): Observable<Bracket[]> {
+    return combineLatest(applicableTaxData$, residencyStatus$).pipe(
+      debounceTime(0),
+      map(([applicableTaxData, residencyStatus]) => {
+        switch (residencyStatus) {
+          case ResidencyStatus.RESIDENT:
+          case ResidencyStatus.FOREIGN_RESIDENT:
+            return applicableTaxData.help;
+          case ResidencyStatus.RESIDENT_NO_TAX_FREE_THRESHOLD:
+            return applicableTaxData.helpNoTaxFree;
+          default:
+            return null;
+        }
+      }),
+      shareReplay(1)
+    );
+  }
+  getHelpNoTaxFreeData(
+    applicableTaxData$: Observable<ApplicableIndividualTaxData>
+  ): Observable<Bracket[]> {
+    return applicableTaxData$.pipe(
+      map(applicableTaxData => applicableTaxData.helpNoTaxFree),
+      shareReplay(1)
+    );
   }
 }
