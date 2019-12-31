@@ -29,7 +29,8 @@ monthlyIncomeTaxTable_2018_19.forEach(data => {
           .calculateMonthlyTotalPaygTaxes(
             of(ResidencyStatus.RESIDENT),
             of(income),
-            weeklyPaygData$
+            weeklyPaygData$,
+            of(0)
           )
           .subscribe(tax => {
             expect(tax).toEqual(withTaxFreeThreshold);
@@ -48,7 +49,8 @@ monthlyIncomeTaxTable_2018_19.forEach(data => {
           .calculateMonthlyTotalPaygTaxes(
             of(ResidencyStatus.RESIDENT_NO_TAX_FREE_THRESHOLD),
             of(income),
-            weeklyPaygData$
+            weeklyPaygData$,
+            of(0)
           )
           .subscribe(tax => {
             expect(tax).toEqual(noTaxFreeThreshold);
@@ -74,7 +76,8 @@ fortnightlyIncomeTaxTable_2018_19.forEach(data => {
           .calculateFortnightlyTotalPaygTaxes(
             of(ResidencyStatus.RESIDENT),
             of(income),
-            weeklyPaygData$
+            weeklyPaygData$,
+            of(0)
           )
           .subscribe(tax => {
             expect(tax).toEqual(withTaxFreeThreshold);
@@ -93,7 +96,8 @@ fortnightlyIncomeTaxTable_2018_19.forEach(data => {
           .calculateFortnightlyTotalPaygTaxes(
             of(ResidencyStatus.RESIDENT_NO_TAX_FREE_THRESHOLD),
             of(income),
-            weeklyPaygData$
+            weeklyPaygData$,
+            of(0)
           )
           .subscribe(tax => {
             expect(tax).toEqual(noTaxFreeThreshold);
@@ -119,7 +123,8 @@ weeklyIncomeTaxTable_2018_19.forEach(data => {
           .calculateWeeklyTotalPaygTaxes(
             of(ResidencyStatus.RESIDENT),
             of(income),
-            weeklyPaygData$
+            weeklyPaygData$,
+            of(0)
           )
           .subscribe(tax => {
             expect(tax).toEqual(withTaxFreeThreshold);
@@ -138,7 +143,8 @@ weeklyIncomeTaxTable_2018_19.forEach(data => {
           .calculateWeeklyTotalPaygTaxes(
             of(ResidencyStatus.RESIDENT_NO_TAX_FREE_THRESHOLD),
             of(income),
-            weeklyPaygData$
+            weeklyPaygData$,
+            of(0)
           )
           .subscribe(tax => {
             expect(tax).toEqual(noTaxFreeThreshold);

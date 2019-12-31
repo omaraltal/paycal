@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 
 import { ApplicableIndividualTaxData } from '@pc/models/applicable-individual-tax-data';
+import { Bracket } from '@pc/models/bracket';
 import { FormulaBasedTier } from '@pc/models/formula-based-tier';
 import { PayAsYouGo } from '@pc/models/pay-as-you-go';
 import { PayFrequency } from '@pc/models/pay-frequency';
 import { ResidencyStatus } from '@pc/models/residency-status';
 import { Superannuation } from '@pc/models/superannuation';
+import { HelpTslCalculatorService } from '@pc/shared/services/help-tsl-calculator.service';
 import { IncomeTaxService } from '@pc/shared/services/income-tax-calculator.service';
 import { MedicareLevyService } from '@pc/shared/services/medicare-levy.service';
 import { PayService } from '@pc/shared/services/pay.service';
@@ -15,9 +17,7 @@ import { SuperannuationService } from '@pc/shared/services/superannuation.servic
 import { TaxDataService } from '@pc/shared/services/tax-data.service';
 import { TaxOffsetService } from '@pc/shared/services/tax-offset.service';
 import { TaxableIncomeService } from '@pc/shared/services/taxable-income.service';
-import { HelpTslCalculatorService } from '@pc/shared/services/help-tsl-calculator.service';
-import { Bracket } from '@pc/models/bracket';
-import { takeUntil, filter, tap } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-income-tax-calculator',
