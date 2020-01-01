@@ -40275,7 +40275,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         this.payFrequency$ = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](this.payFrequency);
         this.innerPayFrequency = _pc_models_pay_frequency__WEBPACK_IMPORTED_MODULE_3__["PayFrequency"].ANNUALLY; // income year
 
-        this.innerIncomeYear = new Date().getFullYear(); // superannuation
+        this.innerIncomeYear = new Date().getMonth() >= 6 ? new Date().getFullYear() : new Date().getFullYear() - 1; // superannuation
 
         this.innerSuperannuationIncluded = false;
         this.innerIncome = 163200;

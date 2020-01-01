@@ -66,7 +66,10 @@ export class IncomeTaxCalculatorComponent implements OnInit, OnDestroy {
   }
 
   // income year
-  innerIncomeYear = new Date().getFullYear();
+  innerIncomeYear =
+    new Date().getMonth() >= 6
+      ? new Date().getFullYear()
+      : new Date().getFullYear() - 1;
   set incomeYear(value: number) {
     this.innerIncomeYear = value;
     this.incomeYear$.next(value);
