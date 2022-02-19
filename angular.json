@@ -120,7 +120,7 @@
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "dist/server",
-            "main": "src/main.server.ts",
+            "main": "server.ts",
             "tsConfig": "tsconfig.server.json",
             "stylePreprocessorOptions": {
               "includePaths": ["src/styles", "node_modules/bootstrap/scss"]
@@ -137,6 +137,32 @@
               "sourceMap": false,
               "optimization": true
             }
+          }
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "options": {
+            "browserTarget": "paycal:build",
+            "serverTarget": "paycal:server"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "paycal:build:production",
+              "serverTarget": "paycal:server:production"
+            }
+          }
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "paycal:build:production",
+            "serverTarget": "paycal:server:production",
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {}
           }
         }
       }
