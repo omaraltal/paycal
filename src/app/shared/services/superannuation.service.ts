@@ -18,10 +18,10 @@ export class SuperannuationService {
     payFrequency$: Observable<PayFrequency>
   ): Observable<number> {
     return combineLatest(
-      superannuationData$,
+      [superannuationData$,
       income$,
       superannuationIncluded$,
-      payFrequency$
+      payFrequency$]
     ).pipe(
       debounceTime(0),
       map(

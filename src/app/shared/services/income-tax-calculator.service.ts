@@ -16,7 +16,7 @@ export class IncomeTaxService {
     taxRatesData$: Observable<{ range: number[]; rate: number }[]>,
     annuallyTaxableIncome$: Observable<number>
   ): Observable<number> {
-    return combineLatest(taxRatesData$, annuallyTaxableIncome$).pipe(
+    return combineLatest([taxRatesData$, annuallyTaxableIncome$]).pipe(
       debounceTime(0),
       map(([taxRatesData, annuallyTaxableIncome]) => {
         return this.calculateIncomeTax(
@@ -60,11 +60,11 @@ export class IncomeTaxService {
     taxRatesData$: Observable<{ range: number[]; rate: number }[]>,
     fortnightlyTaxableIncome$: Observable<number>
   ): Observable<number> {
-    return combineLatest(
+    return combineLatest([
       residencyStatus$,
       taxRatesData$,
       fortnightlyTaxableIncome$
-    ).pipe(
+    ]).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
@@ -86,11 +86,11 @@ export class IncomeTaxService {
     taxRatesData$: Observable<{ range: number[]; rate: number }[]>,
     weeklyTaxableIncome$: Observable<number>
   ): Observable<number> {
-    return combineLatest(
+    return combineLatest([
       residencyStatus$,
       taxRatesData$,
       weeklyTaxableIncome$
-    ).pipe(
+    ]).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
@@ -131,11 +131,11 @@ export class IncomeTaxService {
     monthlyIncomeTax$: Observable<number>,
     monthlyMedicareLevy$: Observable<number>
   ) {
-    return combineLatest(
+    return combineLatest([
       residencyStatus$,
       monthlyIncomeTax$,
       monthlyMedicareLevy$
-    ).pipe(
+    ]).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
@@ -153,11 +153,11 @@ export class IncomeTaxService {
     fortnightlyIncomeTax$: Observable<number>,
     fortnightlyMedicareLevy$: Observable<number>
   ) {
-    return combineLatest(
+    return combineLatest([
       residencyStatus$,
       fortnightlyIncomeTax$,
       fortnightlyMedicareLevy$
-    ).pipe(
+    ]).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
@@ -175,11 +175,11 @@ export class IncomeTaxService {
     weeklyIncomeTax$: Observable<number>,
     weeklyMedicareLevy$: Observable<number>
   ) {
-    return combineLatest(
+    return combineLatest([
       residencyStatus$,
       weeklyIncomeTax$,
       weeklyMedicareLevy$
-    ).pipe(
+    ]).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
@@ -197,11 +197,11 @@ export class IncomeTaxService {
     monthlyTotalTaxes$: Observable<number>,
     monthlyMedicareLevy$: Observable<number>
   ): Observable<number> {
-    return combineLatest(
+    return combineLatest([
       residencyStatus$,
       monthlyTotalTaxes$,
       monthlyMedicareLevy$
-    ).pipe(
+    ]).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
@@ -220,11 +220,11 @@ export class IncomeTaxService {
     fortnightlyTotalTaxes$: Observable<number>,
     fortnightlyMedicareLevy$: Observable<number>
   ): Observable<number> {
-    return combineLatest(
+    return combineLatest([
       residencyStatus$,
       fortnightlyTotalTaxes$,
       fortnightlyMedicareLevy$
-    ).pipe(
+    ]).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
@@ -243,11 +243,11 @@ export class IncomeTaxService {
     weeklyTotalTaxes$: Observable<number>,
     weeklyMedicareLevy$: Observable<number>
   ): Observable<number> {
-    return combineLatest(
+    return combineLatest([
       residencyStatus$,
       weeklyTotalTaxes$,
       weeklyMedicareLevy$
-    ).pipe(
+    ]).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
@@ -266,12 +266,12 @@ export class IncomeTaxService {
     payAsYouGoData$: Observable<PayAsYouGo[]>,
     monthlyHELPnTSL$: Observable<number>
   ): Observable<number> {
-    return combineLatest(
+    return combineLatest([
       residencyStatus$,
       monthlyTaxableIncome$,
       payAsYouGoData$,
       monthlyHELPnTSL$
-    ).pipe(
+    ]).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
@@ -295,12 +295,12 @@ export class IncomeTaxService {
     payAsYouGoData$: Observable<PayAsYouGo[]>,
     fortnightlyHELPnTSL$: Observable<number>
   ): Observable<number> {
-    return combineLatest(
+    return combineLatest([
       residencyStatus$,
       fortnightlyTaxableIncome$,
       payAsYouGoData$,
       fortnightlyHELPnTSL$
-    ).pipe(
+    ]).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
@@ -329,12 +329,12 @@ export class IncomeTaxService {
     payAsYouGoData$: Observable<PayAsYouGo[]>,
     monthlyHELPnTSL$: Observable<number>
   ): Observable<number> {
-    return combineLatest(
+    return combineLatest([
       residencyStatus$,
       weeklyTaxableIncome$,
       payAsYouGoData$,
       monthlyHELPnTSL$
-    ).pipe(
+    ]).pipe(
       debounceTime(0),
       filter(
         ([residencyStatus]) =>
@@ -355,8 +355,8 @@ export class IncomeTaxService {
   calculateAnnuallyIncomeTaxExcludingOffsets(
     annuallyTotalTaxes$: Observable<number>,
     annuallyTaxOffset$: Observable<number>
-  ) {
-    return combineLatest(annuallyTotalTaxes$, annuallyTaxOffset$).pipe(
+  ): Observable<number> {
+    return combineLatest([annuallyTotalTaxes$, annuallyTaxOffset$]).pipe(
       debounceTime(0),
       map(
         ([annuallyTotalTaxes, annuallyTaxOffset]) =>
@@ -410,7 +410,7 @@ export class IncomeTaxService {
     }
   }
 
-  private calculatePayAsYouGo(taxableIncome, payAsYouGoData, payFrequency) {
+  private calculatePayAsYouGo(taxableIncome, payAsYouGoData, payFrequency): number {
     let paygIncome;
     // convert to weekly
     switch (payFrequency) {

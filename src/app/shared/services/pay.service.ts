@@ -9,7 +9,7 @@ export class PayService {
     annuallyTaxableIncome$: Observable<number>,
     annuallyTotalTaxes$: Observable<number>
   ): Observable<number> {
-    return combineLatest(annuallyTaxableIncome$, annuallyTotalTaxes$).pipe(
+    return combineLatest([annuallyTaxableIncome$, annuallyTotalTaxes$]).pipe(
       debounceTime(0),
       map(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes),
       shareReplay(1)
@@ -20,7 +20,7 @@ export class PayService {
     monthlyTaxableIncome$: Observable<number>,
     monthlyTotalTaxes$: Observable<number>
   ): Observable<number> {
-    return combineLatest(monthlyTaxableIncome$, monthlyTotalTaxes$).pipe(
+    return combineLatest([monthlyTaxableIncome$, monthlyTotalTaxes$]).pipe(
       debounceTime(0),
       map(([taxableIncome, totalTaxes]) => taxableIncome - totalTaxes),
       shareReplay(1)
